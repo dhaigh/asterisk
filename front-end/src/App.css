@@ -1,0 +1,23 @@
+path.other, path.other:hover {
+    fill: #ff0;
+}
+path.selected, path.selected:hover {
+    fill: #f00;
+}
+
+path:hover {
+    fill: currentColor;
+}
+
+text {
+    fill: #fff;
+}
+
+rect {
+    display: none;
+    transition: width 0.05s ease-out;
+}
+
+rect.visible {
+    display: inline;
+}

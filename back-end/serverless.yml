@@ -1,0 +1,29 @@
+service: game-test
+provider:
+    name: aws
+    runtime: nodejs10.x
+    region: ap-southeast-2
+    iamRoleStatements:
+        - Effect: Allow
+          Action: dynamodb:*
+          Resource: "*"
+functions:
+    getsome:
+        handler: handler.getState
+        events:
+            - http:
+                path: game/{id}
+                method: get
+                private: true
+                request: 
+                    parameters: 
+                        paths: 
+                            id: true
+
+    putsome:
+        handler: handler.putState
+        events:
+            - http:
+                path: game
+                method: put
+                private: true
