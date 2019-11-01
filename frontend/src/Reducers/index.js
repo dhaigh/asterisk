@@ -1,5 +1,5 @@
-import map from '../map.json'
-import BorderCollection from '../BorderCollection'
+import map from 'map.json';
+import { BorderCollection } from 'utils';
 
 //todo: acquire from server
 const initialState = {
@@ -26,32 +26,31 @@ initialState.continents.forEach((con) => {
 });
 
 export default (state = initialState, action) => {
-    switch (action.type) {
-        case 'PLACE':
-            const territory = state.territories[action.id];
-            return {
-                ...state,
-                player: {
-                    ...state.player,
-                    troopCount: state.player.troopCount - 1,
-                },
-                territories: {
-                    ...state.territories,
-                    [action.id]: {
-                        ...territory,
-                        troopCount: territory.troopCount + 1,
-                    }
+    if (action.type === 'PLACE') {
+        const territory = state.territories[action.id];
+        return {
+            ...state,
+            player: {
+                ...state.player,
+                troopCount: state.player.troopCount - 1,
+            },
+            territories: {
+                ...state.territories,
+                [action.id]: {
+                    ...territory,
+                    troopCount: territory.troopCount + 1,
                 }
-            };
-        case 'TOGGLE':
-            const id = action.id;
-            return {
-                ...state,
-                selected: id,
-                others: new Set([...state.borderCollection.getBorders(id)]),
             }
+        };
 
-        default:
-            return state;
+    } else if (action.type === 'TOGGLE') {
+        const id = action.id;
+        return {
+            ...state,
+            selected: id,
+            others: new Set([...state.borderCollection.getBorders(id)]),
+        };
     }
+
+    return state;
 }

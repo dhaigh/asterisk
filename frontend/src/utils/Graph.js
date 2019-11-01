@@ -1,6 +1,7 @@
 class Graph {
     constructor(size) {
         this.matrix = Array.from(new Array(size), () => {
+            // you can't iterate over Array(size) (without new keyword)
             return new Array(size).fill(false)
         })
     }

@@ -1,23 +1,18 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
-import { place, toggle } from './Actions'
-
 import { darken } from 'polished'
+
+import { place, toggle } from 'actions'
 import TerritoryCircle from './TerritoryCircle'
 
 class Territory extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.onClick = this.onClick.bind(this);
-    }
-
-    onClick() {
+    onClick = () => {
         if (!this.props.enabled) {
             return;
         }
 
         this.props.place(this.props.id);
-    }
+    };
 
     render() {
         const { id, color, circle, d } = this.props;
@@ -52,5 +47,4 @@ export default connect(state => ({
     enabled: state.player.troopCount > 0,
     selected: state.selected,
     others: state.others,
-    edges: state.edges,
 }), { place, toggle })(Territory);
