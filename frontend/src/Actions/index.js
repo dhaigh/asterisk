@@ -13,6 +13,16 @@ export const showBorders = territoryId => ({
     territoryId
 });
 
+export const hoverTerritory = territoryId => ({
+    type: 'hover_territory',
+    territoryId
+});
+
+export const setBorderMode = enabled => ({
+    type: 'set_border_mode',
+    enabled,
+});
+
 export const selectTerritory = territoryId => {
     return (dispatch, getState) => {
         const { viewingBorders } = getState().map;

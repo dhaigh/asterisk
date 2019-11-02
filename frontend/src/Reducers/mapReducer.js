@@ -45,12 +45,19 @@ export default (map = initialMap, action) => {
             neighbours: matrix.getEdges(map.borders, territoryId),
         };
 
-    } else if (action.type === 'toggle_borders') {
+    } else if (action.type === 'hover_territory') {
+        const { territoryId } = action;
         return {
             ...map,
-            viewingBorders: !map.viewingBorders,
-            selectedTerritory: null,
-            neighbours: [],
+            hoverTerritory: territoryId,
+            neighbours: territoryId === null ? [] :
+                matrix.getEdges(map.borders, territoryId),
+        };
+
+    } else if (action.type === 'set_border_mode') {
+        return {
+            ...map,
+            viewingBorders: action.enabled,
         };
     }
 

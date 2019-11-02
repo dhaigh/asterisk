@@ -22,7 +22,7 @@ path:hover {
 path.neighbour, path.neighbour:hover {
     fill: #ff0;
 }
-path.selected, path.selected:hover {
+path.active, path.active:hover {
     fill: #f00;
 }
 

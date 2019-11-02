@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import Circle from './Circle'
 import Map from './Map'
+import { setBorderMode } from 'actions';
 
 export class App extends PureComponent {
     state = {
@@ -14,9 +15,27 @@ export class App extends PureComponent {
         });
     };
 
-    handleChange = () => {
-        this.props.dispatch({type: 'toggle_borders'});
+    handleKeyDown = (e) => {
+        if (e.key === 'Shift') {
+            this.props.setBorderMode(true);
+        }
     };
+
+    handleKeyUp = (e) => {
+        if (e.key === 'Shift') {
+            this.props.setBorderMode(false);
+        }
+    };
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+        document.addEventListener('keyup', this.handleKeyUp);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+        document.removeEventListener('keyup', this.handleKeyUp);
+    }
 
     render() {
         if (!this.props.player) {
@@ -31,14 +50,8 @@ export class App extends PureComponent {
                 <Map />
                 <Circle x={x + 15} y={y + 15} count={troopCount} color={color} />
             </svg>
-            <p>
-                <label>
-                    borders:{' '}
-                    <input type="checkbox" onChange={this.handleChange} />
-                </label>
-            </p>
-            {this.props.selectedTerritory &&
-                <p>{this.props.selectedTerritory.name}</p>
+            {this.props.hoverTerritory &&
+                <p>{this.props.hoverTerritory.name}</p>
             }
         </>;
     }
@@ -46,6 +59,6 @@ export class App extends PureComponent {
 
 export default connect(state => ({
     player: state.players[1],
-    selectedTerritory: state.map.selectedTerritory ?
-        state.map.territories[state.map.selectedTerritory] : null,
-}))(App)
+    hoverTerritory: state.map.hoverTerritory ?
+        state.map.territories[state.map.hoverTerritory] : null,
+}), { setBorderMode })(App)
