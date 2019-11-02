@@ -3,13 +3,18 @@ import { connect } from 'react-redux'
 import Circle from './Circle'
 
 const TerritoryCircle = props => {
-    const { id, troopCount, ...otherProps } = props;
-    return <Circle {...otherProps} count={troopCount} />;
+    const { x, y, color, placement } = props;
+    return <Circle
+        x={x}
+        y={y}
+        color={color}
+        count={placement.numTroops}
+    />;
 }
 
 const mapState = (state, ownProps) => {
-    const { troopCount } = state.territories[ownProps.id];
-    return { troopCount };
+    const placement = state.placements[ownProps.territoryId];
+    return { placement };
 };
 
 export default connect(mapState)(TerritoryCircle);
