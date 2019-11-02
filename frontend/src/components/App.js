@@ -14,6 +14,10 @@ export class App extends PureComponent {
         });
     };
 
+    handleChange = () => {
+        this.props.dispatch({type: 'toggle_borders'});
+    };
+
     render() {
         if (!this.props.player) {
             return null;
@@ -27,11 +31,21 @@ export class App extends PureComponent {
                 <Map />
                 <Circle x={x + 15} y={y + 15} count={troopCount} color={color} />
             </svg>
+            <p>
+                <label>
+                    borders:{' '}
+                    <input type="checkbox" onChange={this.handleChange} />
+                </label>
+            </p>
+            {this.props.selectedTerritory &&
+                <p>{this.props.selectedTerritory.name}</p>
+            }
         </>;
-
     }
 }
 
 export default connect(state => ({
     player: state.players[1],
+    selectedTerritory: state.map.selectedTerritory ?
+        state.map.territories[state.map.selectedTerritory] : null,
 }))(App)

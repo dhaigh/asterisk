@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import { darken } from 'polished'
 
-import { place } from 'actions'
+import { selectTerritory } from 'actions'
 import TerritoryCircle from './TerritoryCircle'
 
 class Territory extends PureComponent {
@@ -11,12 +11,12 @@ class Territory extends PureComponent {
             return;
         }
 
-        this.props.place(this.props.id);
+        this.props.selectTerritory(this.props.id);
     };
 
     render() {
         const { id, color, circle, d } = this.props;
-        const [ circleX, circleY ] = circle;
+        const { isSelected, isNeighbour } = this.props;
 
         return <g
             onClick={this.onClick}
@@ -27,10 +27,14 @@ class Territory extends PureComponent {
                 color={darken(0.2, color)}
                 stroke={darken(0.2, color)}
                 d={d}
+                className={
+                    isSelected ? 'selected' :
+                    isNeighbour ? 'neighbour' : null
+                }
             />
             <TerritoryCircle
-                x={circleX}
-                y={circleY}
+                x={circle[0]}
+                y={circle[1]}
                 color={this.props.player.color}
                 territoryId={id}
             />
@@ -38,6 +42,9 @@ class Territory extends PureComponent {
     }
 }
 
-export default connect(state => ({
+export default connect((state, ownProps) => ({
+    // todo: get "this" player id from somewhere
     player: state.players[1],
-}), { place })(Territory);
+    isSelected: state.map.selectedTerritory === ownProps.id,
+    isNeighbour: state.map.neighbours.indexOf(ownProps.id) >= 0,
+}), { selectTerritory })(Territory);

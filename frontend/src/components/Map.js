@@ -10,16 +10,20 @@ class Map extends PureComponent {
     }
 
     render() {
-        return this.props.map.continents.map(con => {
-            return con.territories.map(ter => {
-                return <Territory
-                    key={ter.id}
-                    id={ter.id}
-                    color={con.color}
-                    circle={ter.circle}
-                    d={ter.d}
-                />;
-            });
+        const { map } = this.props;
+        const territories = Object.entries(map.territories);
+
+        return territories.map(([tid, ter]) => {
+            tid = parseInt(tid);
+            const { color } = map.continents[ter.continentId];
+
+            return <Territory
+                key={tid}
+                id={tid}
+                color={color}
+                circle={ter.circle}
+                d={ter.d}
+            />;
         });
     }
 }

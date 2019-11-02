@@ -1,7 +1,7 @@
 const initialPlacements = {};
 
 export default (placements = initialPlacements, action) => {
-    if (action.type === 'LOAD_MAP') {
+    if (action.type === 'load_map') {
         const newPlacements = {};
 
         action.mapData.continents.forEach(continent => {
@@ -15,7 +15,7 @@ export default (placements = initialPlacements, action) => {
 
         return newPlacements;
 
-    } else if (action.type === 'PLACE') {
+    } else if (action.type === 'place') {
         const playerId = 1;
         const { territoryId } = action;
 

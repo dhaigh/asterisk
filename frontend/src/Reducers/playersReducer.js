@@ -7,7 +7,7 @@ const initialPlayers = {
 };
 
 export default (players = initialPlayers, action) => {
-    if (action.type === 'PLACE') {
+    if (action.type === 'place') {
         const playerId = 1;
         const player = players[playerId];
 
