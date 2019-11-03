@@ -3,6 +3,10 @@ import React from 'react';
 const Circle = props => {
     const { x, y, count, color } = props;
 
+    if (count === 0) {
+        return null;
+    }
+
     return <g>
         <rect
             x={x}
@@ -13,11 +17,8 @@ const Circle = props => {
             width={count >= 10 ? 38 : 30}
             height={30}
             rx={15}
-            className={count > 0 ? 'visible' : null}
         />
-        {count > 0 &&
-            <text x={x + 10} y={y + 20}>{count}</text>
-        }
+        <text x={x + 10} y={y + 20}>{count}</text>
     </g>;
 }
 

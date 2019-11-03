@@ -31,10 +31,5 @@ text {
 }
 
 rect {
-    display: none;
     transition: width 0.05s ease-out;
-}
-
-rect.visible {
-    display: inline;
 }

@@ -1,33 +1,27 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { connect } from 'react-redux'
 import Territory from './Territory'
-import { loadMap } from 'actions';
-import mapData from 'map.json';
 
-class Map extends PureComponent {
-    componentDidMount() {
-        this.props.loadMap(mapData);
-    }
+const Map = ({ map }) => {
+    const territories = Object.entries(map.territories);
 
-    render() {
-        const { map } = this.props;
-        const territories = Object.entries(map.territories);
+    return territories.map(([tid, ter]) => {
+        tid = parseInt(tid);
+        const { color } = map.continents[ter.continentId];
 
-        return territories.map(([tid, ter]) => {
-            tid = parseInt(tid);
-            const { color } = map.continents[ter.continentId];
+        return <Territory
+            key={tid}
+            id={tid}
+            color={color}
+            circle={ter.circle}
+            d={ter.d}
+        />;
+    });
+};
 
-            return <Territory
-                key={tid}
-                id={tid}
-                color={color}
-                circle={ter.circle}
-                d={ter.d}
-            />;
-        });
-    }
-}
-
+// get map from redux here rather than passing it in as prop from <App />
+// because redux diffing algo seems faster than the react props one (at least
+// in this case)
 export default connect(state => ({
     map: state.map,
-}), { loadMap })(Map);
+}))(Map);

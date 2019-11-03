@@ -1,16 +1,25 @@
-export const loadMap = mapData => ({
-    type: 'load_map',
-    mapData
+import map from 'map.json';
+
+export const processMap = mapData => ({
+    type: 'process_map',
+    mapData,
 });
+
+export const loadMap = () => {
+    return dispatch => {
+        // todo: get from server
+        dispatch(processMap(map));
+    };
+};
 
 export const place = territoryId => ({
     type: 'place',
-    territoryId
+    territoryId,
 });
 
 export const hoverTerritory = territoryId => ({
     type: 'hover_territory',
-    territoryId
+    territoryId,
 });
 
 export const setViewingNeighbours = on => ({

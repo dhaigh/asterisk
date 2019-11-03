@@ -2,14 +2,18 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import Circle from './Circle'
 import Map from './Map'
-import { setViewingNeighbours } from 'actions';
+import { loadMap, setViewingNeighbours } from 'actions';
 
-export class App extends PureComponent {
+class App extends PureComponent {
     state = {
         mousePos: [-1000, 0],
     };
 
     handleMouseMove = (e) => {
+        // these coords are relative to the top left corner of the viewport, so
+        // when we make a troop count circle at these coords, it will naturally
+        // be offset from the mouse pointer by the amount of padding where the
+        // <svg> starts
         this.setState({
             mousePos: [e.clientX, e.clientY],
         });
@@ -30,6 +34,7 @@ export class App extends PureComponent {
     componentDidMount() {
         document.addEventListener('keydown', this.handleKeyDown);
         document.addEventListener('keyup', this.handleKeyUp);
+        this.props.loadMap();
     }
 
     componentWillUnmount() {
@@ -38,17 +43,13 @@ export class App extends PureComponent {
     }
 
     render() {
-        if (!this.props.player) {
-            return null;
-        }
-
         const [ x, y ] = this.state.mousePos;
         const { color, troopCount } = this.props.player;
 
         return <>
             <svg onMouseMove={this.handleMouseMove}>
-                <Map />
-                <Circle x={x + 15} y={y + 15} count={troopCount} color={color} />
+                <Map map={this.props.map} />
+                <Circle x={x - 2} y={y - 2} count={troopCount} color={color} />
             </svg>
             {this.props.hoverTerritory &&
                 <p>{this.props.hoverTerritory.name}</p>
@@ -59,6 +60,6 @@ export class App extends PureComponent {
 
 export default connect(state => ({
     player: state.players[1],
-    hoverTerritory: state.map.hoverTerritory ?
-        state.map.territories[state.map.hoverTerritory] : null,
-}), { setViewingNeighbours })(App)
+    hoverTerritory: state.neighbours.tid ?
+        state.map.territories[state.neighbours.tid] : null,
+}), { loadMap, setViewingNeighbours })(App)

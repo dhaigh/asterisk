@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import { darken } from 'polished'
+import Circle from './Circle'
 
 import { selectTerritory, hoverTerritory } from 'actions'
-import TerritoryCircle from './TerritoryCircle'
 
 class Territory extends PureComponent {
     handleClick = () => {
@@ -37,11 +37,11 @@ class Territory extends PureComponent {
                     isNeighbour ? 'neighbour' : null
                 }
             />
-            <TerritoryCircle
+            <Circle
                 x={circle[0]}
                 y={circle[1]}
                 color={this.props.player.color}
-                territoryId={id}
+                count={this.props.placement.numTroops}
             />
         </g>;
     }
@@ -53,15 +53,16 @@ const mapToProps = (state, ownProps) => {
         player: state.players[1],
         isActive: false,
         isNeighbour: false,
+        placement: state.placements[ownProps.id],
     };
 
-    const { map } = state;
+    const { neighbours } = state;
 
-    if (map.viewingNeighbours && map.hoverTerritory !== null) {
-        props.isActive = map.hoverTerritory === ownProps.id;
+    if (neighbours.on) {
+        props.isActive = ownProps.id === neighbours.tid;
 
-        const selected = map.territories[map.hoverTerritory];
-        props.isNeighbour = selected.neighbours.indexOf(ownProps.id) >= 0;
+        const territory = state.map.territories[neighbours.tid];
+        props.isNeighbour = territory.neighbours.indexOf(ownProps.id) >= 0;
     }
 
     return props;

@@ -3,14 +3,10 @@ import * as matrix from 'utils/adjacencyMatrix';
 const initialMap = {
     territories: {},
     continents: {},
-
-    // neighbour viewing stuff
-    viewingNeighbours: false,
-    hoverTerritory: null,
 };
 
 export default (map = initialMap, action) => {
-    if (action.type === 'load_map') {
+    if (action.type === 'process_map') {
         const { continents } = action.mapData;
         const borders =  matrix.build(action.mapData.borders);
         const newMap = { ...map };
@@ -33,20 +29,7 @@ export default (map = initialMap, action) => {
         });
 
         return newMap;
-
-    } else if (action.type === 'hover_territory') {
-        const { territoryId } = action;
-        return {
-            ...map,
-            hoverTerritory: territoryId,
-        };
-
-    } else if (action.type === 'set_viewing_neighbours') {
-        return {
-            ...map,
-            viewingNeighbours: action.on,
-        };
     }
 
     return map;
-}
+};

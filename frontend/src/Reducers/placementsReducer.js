@@ -1,7 +1,7 @@
 const initialPlacements = {};
 
 export default (placements = initialPlacements, action) => {
-    if (action.type === 'load_map') {
+    if (action.type === 'process_map') {
         const newPlacements = {};
 
         action.mapData.continents.forEach(continent => {
@@ -35,4 +35,4 @@ export default (placements = initialPlacements, action) => {
     }
 
     return placements;
-}
+};

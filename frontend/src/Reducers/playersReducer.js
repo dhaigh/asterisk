@@ -21,4 +21,4 @@ export default (players = initialPlayers, action) => {
     }
 
     return players;
-}
+};
