@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import Circle from './Circle'
 import Map from './Map'
-import { setBorderMode } from 'actions';
+import { setViewingNeighbours } from 'actions';
 
 export class App extends PureComponent {
     state = {
@@ -17,13 +17,13 @@ export class App extends PureComponent {
 
     handleKeyDown = (e) => {
         if (e.key === 'Shift') {
-            this.props.setBorderMode(true);
+            this.props.setViewingNeighbours(true);
         }
     };
 
     handleKeyUp = (e) => {
         if (e.key === 'Shift') {
-            this.props.setBorderMode(false);
+            this.props.setViewingNeighbours(false);
         }
     };
 
@@ -61,4 +61,4 @@ export default connect(state => ({
     player: state.players[1],
     hoverTerritory: state.map.hoverTerritory ?
         state.map.territories[state.map.hoverTerritory] : null,
-}), { setBorderMode })(App)
+}), { setViewingNeighbours })(App)

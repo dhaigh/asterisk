@@ -18,10 +18,6 @@ class Territory extends PureComponent {
         this.props.hoverTerritory(this.props.id);
     };
 
-    handleMouseOut = () => {
-        this.props.hoverTerritory(null);
-    };
-
     render() {
         const { id, color, circle, d } = this.props;
         const { isActive, isNeighbour } = this.props;
@@ -29,7 +25,6 @@ class Territory extends PureComponent {
         return <g
             onClick={this.handleClick}
             onMouseOver={this.handleMouseOver}
-            onMouseOut={this.handleMouseOut}
             key={id}
         >
             <path
@@ -62,9 +57,11 @@ const mapToProps = (state, ownProps) => {
 
     const { map } = state;
 
-    if (map.viewingBorders) {
+    if (map.viewingNeighbours && map.hoverTerritory !== null) {
         props.isActive = map.hoverTerritory === ownProps.id;
-        props.isNeighbour = map.neighbours.indexOf(ownProps.id) >= 0;
+
+        const selected = map.territories[map.hoverTerritory];
+        props.isNeighbour = selected.neighbours.indexOf(ownProps.id) >= 0;
     }
 
     return props;

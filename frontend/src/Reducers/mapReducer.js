@@ -3,21 +3,17 @@ import * as matrix from 'utils/adjacencyMatrix';
 const initialMap = {
     territories: {},
     continents: {},
-    borders: [],
 
-    // border selection stuff
-    viewingBorders: false,
-    selectedTerritory: null,
-    neighbours: [],
+    // neighbour viewing stuff
+    viewingNeighbours: false,
+    hoverTerritory: null,
 };
 
 export default (map = initialMap, action) => {
     if (action.type === 'load_map') {
         const { continents } = action.mapData;
-        const newMap = {
-            ...map,
-            borders: matrix.build(action.mapData.borders),
-        };
+        const borders =  matrix.build(action.mapData.borders);
+        const newMap = { ...map };
 
         continents.forEach(continent => {
             continent.territories.forEach(territory => {
@@ -26,6 +22,7 @@ export default (map = initialMap, action) => {
                     circle: territory.circle,
                     continentId: continent.id,
                     d: territory.d,
+                    neighbours: borders[territory.id],
                 };
             });
 
@@ -37,27 +34,17 @@ export default (map = initialMap, action) => {
 
         return newMap;
 
-    } else if (action.type === 'show_borders') {
-        const { territoryId } = action;
-        return {
-            ...map,
-            selectedTerritory: territoryId,
-            neighbours: matrix.getEdges(map.borders, territoryId),
-        };
-
     } else if (action.type === 'hover_territory') {
         const { territoryId } = action;
         return {
             ...map,
             hoverTerritory: territoryId,
-            neighbours: territoryId === null ? [] :
-                matrix.getEdges(map.borders, territoryId),
         };
 
-    } else if (action.type === 'set_border_mode') {
+    } else if (action.type === 'set_viewing_neighbours') {
         return {
             ...map,
-            viewingBorders: action.enabled,
+            viewingNeighbours: action.on,
         };
     }
 

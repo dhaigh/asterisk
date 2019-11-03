@@ -8,28 +8,24 @@ export const place = territoryId => ({
     territoryId
 });
 
-export const showBorders = territoryId => ({
-    type: 'show_borders',
-    territoryId
-});
-
 export const hoverTerritory = territoryId => ({
     type: 'hover_territory',
     territoryId
 });
 
-export const setBorderMode = enabled => ({
-    type: 'set_border_mode',
-    enabled,
+export const setViewingNeighbours = on => ({
+    type: 'set_viewing_neighbours',
+    on,
 });
 
 export const selectTerritory = territoryId => {
     return (dispatch, getState) => {
-        const { viewingBorders } = getState().map;
-        if (viewingBorders) {
-            dispatch(showBorders(territoryId));
-        } else {
-            dispatch(place(territoryId));
+        const { viewingNeighbours } = getState().map;
+
+        if (viewingNeighbours) {
+            return;
         }
+
+        dispatch(place(territoryId));
     };
 };
