@@ -49,8 +49,7 @@ class Territory extends PureComponent {
 
 const mapToProps = (state, ownProps) => {
     const props = {
-        // todo: get "this" player id from somewhere
-        player: state.players[1],
+        player: state.players[state.myId],
         isActive: false,
         isNeighbour: false,
         placement: state.placements[ownProps.id],

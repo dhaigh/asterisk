@@ -2,10 +2,11 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import Circle from './Circle'
 import Map from './Map'
-import { loadMap, setViewingNeighbours } from 'actions';
+import { load, setViewingNeighbours } from 'actions';
 
 class App extends PureComponent {
     state = {
+        loaded: false,
         mousePos: [-1000, 0],
     };
 
@@ -34,7 +35,9 @@ class App extends PureComponent {
     componentDidMount() {
         document.addEventListener('keydown', this.handleKeyDown);
         document.addEventListener('keyup', this.handleKeyUp);
-        this.props.loadMap();
+        this.props.load().then(() => {
+            this.setState({loaded: true});
+        });
     }
 
     componentWillUnmount() {
@@ -43,6 +46,10 @@ class App extends PureComponent {
     }
 
     render() {
+        if (!this.state.loaded) {
+            return <p>Loading...</p>;
+        }
+
         const [ x, y ] = this.state.mousePos;
         const { color, troopCount } = this.props.player;
 
@@ -59,7 +66,7 @@ class App extends PureComponent {
 }
 
 export default connect(state => ({
-    player: state.players[1],
+    player: state.players[state.myId],
     hoverTerritory: state.neighbours.tid ?
         state.map.territories[state.neighbours.tid] : null,
-}), { loadMap, setViewingNeighbours })(App)
+}), { load, setViewingNeighbours })(App)

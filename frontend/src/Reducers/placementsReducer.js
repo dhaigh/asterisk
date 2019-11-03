@@ -1,10 +1,10 @@
 const initialPlacements = {};
 
 export default (placements = initialPlacements, action) => {
-    if (action.type === 'process_map') {
+    if (action.type === 'init') {
         const newPlacements = {};
 
-        action.mapData.continents.forEach(continent => {
+        action.map.continents.forEach(continent => {
             continent.territories.forEach(territory => {
                 newPlacements[territory.id] = {
                     playerId: null,

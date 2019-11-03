@@ -1,14 +1,19 @@
 import map from 'map.json';
 
-export const processMap = mapData => ({
-    type: 'process_map',
-    mapData,
+export const init = data => ({
+    type: 'init',
+    map: data.map,
+    myId: data.myId,
 });
 
-export const loadMap = () => {
+export const load = () => {
     return dispatch => {
         // todo: get from server
-        dispatch(processMap(map));
+        dispatch(init({
+            myId: 1,
+            map,
+        }));
+        return Promise.resolve();
     };
 };
 
