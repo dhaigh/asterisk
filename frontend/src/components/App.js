@@ -58,9 +58,12 @@ class App extends PureComponent {
                 <Map map={this.props.map} />
                 <Circle x={x - 2} y={y - 2} count={troopCount} color={color} />
             </svg>
-            {this.props.hoverTerritory &&
-                <p>{this.props.hoverTerritory.name}</p>
-            }
+            <section className="panel">
+                <h1>Asterisk</h1>
+                <section className="territory">Territory: {this.props.hoverTerritory && this.props.hoverTerritory.name}</section>
+            </section>
+            <br className="clearboth" />
+            <p className="hint">Hold <span className="key">Shift</span> key to view territory neighbours.</p>
         </>;
     }
 }
