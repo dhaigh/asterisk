@@ -60,8 +60,12 @@ const mapToProps = (state, ownProps) => {
     if (neighbours.on) {
         props.isActive = ownProps.id === neighbours.tid;
 
+        // needs get territory from state (if one has been selected for
+        // neighbour viewing--neighbours.tid might be null) and check if this
+        // territory is one its neighbours (.indexOf)
         const territory = state.map.territories[neighbours.tid];
-        props.isNeighbour = territory.neighbours.indexOf(ownProps.id) >= 0;
+        props.isNeighbour = !!territory &&
+            territory.neighbours.indexOf(ownProps.id) >= 0;
     }
 
     return props;
