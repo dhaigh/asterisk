@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 // app stuff
 import App from './components/App';
 import reducer from './reducers';
-import './index.css';
+import './index.scss';
 
 const devTools = window.__REDUX_DEVTOOLS_EXTENSION__ || (_ => null);
 

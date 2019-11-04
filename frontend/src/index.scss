@@ -16,6 +16,8 @@ body {
     clear: both;
 }
 
+// -----------------------------------------------------------------------------
+// hint
 p.hint {
     margin-top: 0.9rem;
     font-size: 0.9rem;
@@ -29,22 +31,11 @@ span.key {
     font-size: 0.8rem;
 }
 
-svg {
-    height: 660px;
-    width: 1030px;
-    border: 2px solid #000;
-}
-
-svg * {
-    user-select: none;
-}
-
-svg, section.panel {
-    float: left;
-}
-
+// -----------------------------------------------------------------------------
+// panel
 section.panel {
     position: relative;
+    float: left;
     margin-left: 1rem;
     height: 660px;
     padding: 0.5rem;
@@ -60,19 +51,34 @@ section.territory {
     font-size: 0.9rem;
 }
 
+// -----------------------------------------------------------------------------
+// svg stuff
+svg {
+    float: left;
+    height: 660px;
+    width: 1030px;
+    border: 2px solid #000;
+}
+
 path:hover {
     fill: currentColor;
 }
 
-path.neighbour, path.neighbour:hover {
-    fill: #ff0;
+path.neighbour {
+    &, &:hover {
+        fill: #ff0;
+    }
 }
-path.active, path.active:hover {
-    fill: #f00;
+
+path.active {
+    &, &:hover {
+        fill: #f00;
+    }
 }
 
 text {
     fill: #fff;
+    user-select: none;
 }
 
 rect {
