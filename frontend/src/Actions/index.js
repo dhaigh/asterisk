@@ -35,9 +35,7 @@ export const setViewingNeighbours = on => ({
 
 export const selectTerritory = territoryId => {
     return (dispatch, getState) => {
-        const { viewingNeighbours } = getState().map;
-
-        if (viewingNeighbours) {
+        if (getState().neighbours.on) {
             return;
         }
 
