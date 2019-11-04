@@ -1,7 +1,7 @@
 import * as types from './types';
 import map from 'map.json';
 
-export const init = data => ({
+const init = data => ({
     type: types.INIT,
     map: data.map,
     myId: data.myId,
@@ -18,7 +18,7 @@ export const load = () => {
     };
 };
 
-export const place = territoryId => ({
+const place = territoryId => ({
     type: types.PLACE,
     territoryId,
 });
