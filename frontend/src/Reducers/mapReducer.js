@@ -9,8 +9,8 @@ const initialMap = {
 export default (map = initialMap, action) => {
     if (action.type === types.INIT) {
         const newMap = { ...map };
-        const { borders, continents } = action.map;
-        const borderMapping = buildAdjacencyMap(borders);
+        const { neighbours, continents } = action.map;
+        const neighbourMapping = buildAdjacencyMap(neighbours);
 
         continents.forEach(continent => {
             continent.territories.forEach(territory => {
@@ -20,7 +20,7 @@ export default (map = initialMap, action) => {
                     circle: territory.circle,
                     continentId: continent.id,
                     d: territory.d,
-                    neighbours: borderMapping[territory.id],
+                    neighbours: neighbourMapping[territory.id],
                 };
             });
 
