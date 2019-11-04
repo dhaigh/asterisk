@@ -1,7 +1,8 @@
+import * as types from './types';
 import map from 'map.json';
 
 export const init = data => ({
-    type: 'init',
+    type: types.INIT,
     map: data.map,
     myId: data.myId,
 });
@@ -18,17 +19,17 @@ export const load = () => {
 };
 
 export const place = territoryId => ({
-    type: 'place',
+    type: types.PLACE,
     territoryId,
 });
 
 export const hoverTerritory = territoryId => ({
-    type: 'hover_territory',
+    type: types.HOVER_TERRITORY,
     territoryId,
 });
 
 export const setViewingNeighbours = on => ({
-    type: 'set_viewing_neighbours',
+    type: types.SET_VIEWING_NEIGHBOURS,
     on,
 });
 

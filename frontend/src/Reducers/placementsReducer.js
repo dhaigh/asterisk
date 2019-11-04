@@ -1,7 +1,9 @@
+import * as types from 'actions/types';
+
 const initialPlacements = {};
 
 export default (placements = initialPlacements, action) => {
-    if (action.type === 'init') {
+    if (action.type === types.INIT) {
         const newPlacements = {};
 
         action.map.continents.forEach(continent => {
@@ -15,7 +17,7 @@ export default (placements = initialPlacements, action) => {
 
         return newPlacements;
 
-    } else if (action.type === 'place') {
+    } else if (action.type === types.PLACE) {
         const playerId = 1;
         const { territoryId } = action;
 

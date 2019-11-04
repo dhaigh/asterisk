@@ -1,17 +1,19 @@
+import * as types from 'actions/types';
+
 const initialState = {
     on: false,
     tid: null,
 };
 
 export default (state = initialState, action) => {
-    if (action.type === 'hover_territory') {
+    if (action.type === types.HOVER_TERRITORY) {
         const { territoryId } = action;
         return {
             ...state,
             tid: territoryId,
         };
 
-    } else if (action.type === 'set_viewing_neighbours') {
+    } else if (action.type === types.SET_VIEWING_NEIGHBOURS) {
         return {
             ...state,
             on: action.on,

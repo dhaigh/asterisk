@@ -1,3 +1,5 @@
+import * as types from 'actions/types';
+
 const initialPlayers = {
     1: {
         name: 'Deccaz',
@@ -7,7 +9,7 @@ const initialPlayers = {
 };
 
 export default (players = initialPlayers, action) => {
-    if (action.type === 'place') {
+    if (action.type === types.PLACE) {
         const playerId = 1;
         const player = players[playerId];
 
