@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
-import { darken } from 'polished'
 import Circle from './Circle'
 import Map from './Map'
+import Panel from './Panel'
 import { load, setViewingNeighbours } from 'actions';
-import { intKeyEntries } from 'utils';
 
 class App extends PureComponent {
     state = {
@@ -57,38 +56,18 @@ class App extends PureComponent {
 
         return <>
             <svg className="map" onMouseMove={this.handleMouseMove}>
-                <Map map={this.props.map} />
+                <Map />
                 <Circle x={x - 2} y={y - 2} count={troopCount} color={color} />
             </svg>
-            <div className="panel">
-                <h1>Asterisk</h1>
-                <section className="players">
-                    <h2>Players</h2>
-                    {intKeyEntries(this.props.players).map(([pid, player]) => {
-                        return <li key={pid}>
-                            <svg width="32" height="32">
-                                <circle cx="16" cy="16" r="12"
-                                    stroke={darken(0.2, player.color)}
-                                    strokeWidth="2"
-                                    fill={player.color} />
-                            </svg>
-                            <span>{player.name}</span>
-                        </li>;
-                    })}
-                </section>
-
-                <section className="territory">Territory: {this.props.hoverTerritory && this.props.hoverTerritory.name}</section>
-            </div>
+            <Panel />
             <br className="clearboth" />
-            <p className="hint">Hold <span className="key">Shift</span> key to view territory neighbours.</p>
+            <p className="hint">
+                Hold <span className="key">Shift</span> key to view territory neighbours.
+            </p>
         </>;
     }
 }
 
 export default connect(state => ({
-    myId: state.myId,
     player: state.players[state.myId],
-    players: state.players,
-    hoverTerritory: state.neighbours.tid ?
-        state.map.territories[state.neighbours.tid] : null,
 }), { load, setViewingNeighbours })(App)
