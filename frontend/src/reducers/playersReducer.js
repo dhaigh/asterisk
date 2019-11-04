@@ -2,18 +2,18 @@ import * as types from 'actions/types';
 
 const initialPlayers = {
     1: {
-        name: 'Deccaz',
-        color: '#3fafd7',
+        name: 'Geddy',
+        color: '#006aff',
         troopCount: 13,
     },
     2: {
-        name: 'Dave',
-        color: '#ff7676',
+        name: 'Alex',
+        color: '#ff0022',
         troopCount: 13,
     },
     3: {
-        name: 'Alex',
-        color: '#9231e2',
+        name: 'Neil',
+        color: '#ff8800',
         troopCount: 13,
     },
 };
