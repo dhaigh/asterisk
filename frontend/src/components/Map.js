@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import Territory from './Territory'
+import { intKeyEntries } from 'utils';
 
 const Map = ({ map }) => {
-    const territories = Object.entries(map.territories);
+    const territories = intKeyEntries(map.territories);
 
     return territories.map(([tid, ter]) => {
-        tid = parseInt(tid);
         const { color } = map.continents[ter.continentId];
 
         return <Territory

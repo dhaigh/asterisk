@@ -1,8 +1,9 @@
-// takes an array of integer 2-tuples (adjacency list) and turns it into a
-// matrix where indicies are vertices
-const build = list => {
+// takes an array of integer 2-tuples (adjacency list) and turns it into an
+// array where indicies are vertices and values are arrays of adjacent vertices
+export const buildAdjacencyMap = list => {
     const size = Math.max(...list.flat()) + 1;
 
+    // make 2d array size x size, filled with false
     const matrix = Array.from(new Array(size), () => {
         // you can't iterate over `Array(size)` (without new keyword)
         return new Array(size).fill(false)
@@ -21,11 +22,11 @@ const build = list => {
     // lookup form so that for given vertex a, we can get all adjacent vertices
     // with matrix[a]
     return matrix.map(row => {
-        // remember that indicies are vertices, so we return the index (`vertex`)
-        // if there is an edge present, otherwise return null for filtering
-        // purposes
-
         return row.map((hasEdge, vertex) => {
+            // remember that indicies are vertices, so we return the index
+            // (`vertex`) if there is an edge present, otherwise return null
+            // for filtering purposes
+
             if (hasEdge) {
                 return vertex;
             }
@@ -37,4 +38,8 @@ const build = list => {
     });
 };
 
-export { build };
+export const intKeyEntries = object => {
+    return Object.entries(object).map(([key, value]) => {
+        return [parseInt(key, 10), value];
+    });
+};

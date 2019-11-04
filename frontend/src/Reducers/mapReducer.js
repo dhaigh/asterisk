@@ -1,5 +1,5 @@
 import * as types from 'actions/types';
-import * as matrix from 'utils/adjacencyMatrix';
+import { buildAdjacencyMap } from 'utils';
 
 const initialMap = {
     territories: {},
@@ -10,7 +10,7 @@ export default (map = initialMap, action) => {
     if (action.type === types.INIT) {
         const newMap = { ...map };
         const { borders, continents } = action.map;
-        const borderMapping =  matrix.build(borders);
+        const borderMapping = buildAdjacencyMap(borders);
 
         continents.forEach(continent => {
             continent.territories.forEach(territory => {

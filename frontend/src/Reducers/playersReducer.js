@@ -6,6 +6,16 @@ const initialPlayers = {
         color: '#3fafd7',
         troopCount: 13,
     },
+    2: {
+        name: 'Dave',
+        color: '#ff7676',
+        troopCount: 13,
+    },
+    3: {
+        name: 'Alex',
+        color: '#9231e2',
+        troopCount: 13,
+    },
 };
 
 export default (players = initialPlayers, action) => {

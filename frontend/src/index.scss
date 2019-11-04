@@ -33,7 +33,7 @@ span.key {
 
 // -----------------------------------------------------------------------------
 // panel
-section.panel {
+.panel {
     position: relative;
     float: left;
     margin-left: 1rem;
@@ -42,6 +42,22 @@ section.panel {
     width: 300px;
     background: #ffce80;
     border-radius: 3px;
+}
+
+section.players li {
+    list-style: none;
+    position: relative;
+    height: 32px;
+
+    svg {
+        position: absolute;
+    }
+
+    span {
+        position: absolute;
+        top: 8px;
+        left: 35px;
+    }
 }
 
 section.territory {
@@ -53,7 +69,7 @@ section.territory {
 
 // -----------------------------------------------------------------------------
 // svg stuff
-svg {
+svg.map {
     float: left;
     height: 660px;
     width: 1030px;
