@@ -18,7 +18,7 @@ class App extends PureComponent {
         // be offset from the mouse pointer by the amount of padding where the
         // <svg> starts
         this.setState({
-            mousePos: [e.clientX, e.clientY],
+            mousePos: [e.pageX, e.pageY],
         });
     };
 
