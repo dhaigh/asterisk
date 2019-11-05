@@ -28,10 +28,11 @@ export const setViewingNeighbours = on => ({
     on,
 });
 
-const place = territoryId => ({
+const place = (territoryId, playerId) => ({
     type: types.PLACE,
     territoryId,
-})
+    playerId,
+});
 
 export const selectTerritory = territoryId => {
     return (dispatch, getState) => {
@@ -47,6 +48,6 @@ export const selectTerritory = territoryId => {
             return;
         }
 
-        dispatch(place(territoryId));
+        dispatch(place(territoryId, state.myId));
     };
 };

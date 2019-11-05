@@ -18,9 +18,7 @@ export default (placements = initialPlacements, action) => {
         return newPlacements;
 
     } else if (action.type === types.PLACE) {
-        const playerId = 1;
-        const { territoryId } = action;
-
+        const { territoryId, playerId } = action;
         const placement = placements[territoryId];
 
         if (placement.playerId !== playerId && placement.playerId !== null) {

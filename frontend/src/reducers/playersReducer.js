@@ -20,7 +20,7 @@ const initialPlayers = {
 
 export default (players = initialPlayers, action) => {
     if (action.type === types.PLACE) {
-        const playerId = 1;
+        const { playerId } = action;
         const player = players[playerId];
 
         return {
