@@ -18,11 +18,6 @@ export const load = () => {
     };
 };
 
-const place = territoryId => ({
-    type: types.PLACE,
-    territoryId,
-});
-
 export const hoverTerritory = territoryId => ({
     type: types.HOVER_TERRITORY,
     territoryId,
@@ -33,9 +28,22 @@ export const setViewingNeighbours = on => ({
     on,
 });
 
+const place = territoryId => ({
+    type: types.PLACE,
+    territoryId,
+})
+
 export const selectTerritory = territoryId => {
     return (dispatch, getState) => {
-        if (getState().neighbours.on) {
+        const state = getState();
+
+        // can't place when neighbour mode is on (shift key)
+        if (state.neighbours.on) {
+            return;
+        }
+
+        // can't place once you've run out
+        if (state.players[state.myId].troopCount === 0) {
             return;
         }
 

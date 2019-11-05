@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
-import Circle from './Circle'
 import Map from './Map'
 import Panel from './Panel'
 import { load, setViewingNeighbours } from 'actions';
@@ -8,17 +7,6 @@ import { load, setViewingNeighbours } from 'actions';
 class App extends PureComponent {
     state = {
         loaded: false,
-        mousePos: [-1000, 0],
-    };
-
-    handleMouseMove = (e) => {
-        // these coords are relative to the top left corner of the viewport, so
-        // when we make a troop count circle at these coords, it will naturally
-        // be offset from the mouse pointer by the amount of padding where the
-        // <svg> starts
-        this.setState({
-            mousePos: [e.pageX, e.pageY],
-        });
     };
 
     handleKeyDown = (e) => {
@@ -51,14 +39,8 @@ class App extends PureComponent {
             return <p>Loading...</p>;
         }
 
-        const [ x, y ] = this.state.mousePos;
-        const { color, troopCount } = this.props.player;
-
         return <>
-            <svg className="map" onMouseMove={this.handleMouseMove}>
-                <Map />
-                <Circle x={x - 2} y={y - 2} count={troopCount} color={color} />
-            </svg>
+            <Map />
             <Panel />
             <br className="clearboth" />
             <p className="hint">
@@ -68,6 +50,7 @@ class App extends PureComponent {
     }
 }
 
-export default connect(state => ({
-    player: state.players[state.myId],
-}), { load, setViewingNeighbours })(App)
+export default connect(
+    null,
+    { load, setViewingNeighbours }
+)(App)

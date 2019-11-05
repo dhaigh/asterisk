@@ -3,10 +3,6 @@ import React from 'react';
 const Circle = props => {
     const { x, y, count, color } = props;
 
-    if (count === 0) {
-        return null;
-    }
-
     return <g>
         <rect
             x={x}

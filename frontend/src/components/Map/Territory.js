@@ -2,15 +2,10 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import { darken } from 'polished'
 import Circle from './Circle'
-
 import { selectTerritory, hoverTerritory } from 'actions'
 
 class Territory extends PureComponent {
     handleClick = () => {
-        if (this.props.player.troopCount === 0) {
-            return;
-        }
-
         this.props.selectTerritory(this.props.id);
     };
 
@@ -19,37 +14,40 @@ class Territory extends PureComponent {
     };
 
     render() {
-        const { id, color, circle, d } = this.props;
-        const { isActive, isNeighbour } = this.props;
+        // from own props
+        const { territory, continentColor } = this.props;
 
         return <g
             onClick={this.handleClick}
             onMouseOver={this.handleMouseOver}
-            key={id}
         >
             <path
-                fill={color}
-                color={darken(0.2, color)}
-                stroke={darken(0.2, color)}
-                d={d}
+                fill={continentColor}
+                color={darken(0.2, continentColor)}
+                stroke={darken(0.2, continentColor)}
+                d={territory.d}
                 className={
-                    isActive ? 'active' :
-                    isNeighbour ? 'neighbour' : null
+                    this.props.isActive ? 'active' :
+                    this.props.isNeighbour ? 'neighbour' : null
                 }
             />
-            <Circle
-                x={circle[0]}
-                y={circle[1]}
-                color={this.props.player.color}
-                count={this.props.placement.numTroops}
-            />
+
+            {/* don't need to render circle if there's no troops */}
+            {this.props.placement.numTroops > 0 &&
+                <Circle
+                    x={territory.circle[0]}
+                    y={territory.circle[1]}
+                    color={this.props.myColor}
+                    count={this.props.placement.numTroops}
+                />
+            }
         </g>;
     }
 }
 
 const mapToProps = (state, ownProps) => {
     const props = {
-        player: state.players[state.myId],
+        myColor: state.players[state.myId].color,
         isActive: false,
         isNeighbour: false,
         placement: state.placements[ownProps.id],
