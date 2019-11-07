@@ -3,14 +3,15 @@ import { connect } from 'react-redux'
 import { darken } from 'polished'
 import Circle from './Circle'
 import { selectTerritory, hoverTerritory } from 'actions'
+import { getSelf, isActive, isNeighbour, getPlacement } from 'selectors';
 
 class Territory extends PureComponent {
     handleClick = () => {
-        this.props.selectTerritory(this.props.id);
+        this.props.selectTerritory(this.props.territory.id);
     };
 
     handleMouseOver = () => {
-        this.props.hoverTerritory(this.props.id);
+        this.props.hoverTerritory(this.props.territory.id);
     };
 
     render() {
@@ -45,31 +46,9 @@ class Territory extends PureComponent {
     }
 }
 
-const mapToProps = (state, ownProps) => {
-    const props = {
-        myColor: state.players[state.myId].color,
-        isActive: false,
-        isNeighbour: false,
-        placement: state.placements[ownProps.id],
-    };
-
-    const { neighbours } = state;
-
-    if (neighbours.on) {
-        props.isActive = ownProps.id === neighbours.tid;
-
-        // needs get territory from state (if one has been selected for
-        // neighbour viewing--neighbours.tid might be null) and check if this
-        // territory is one its neighbours (.indexOf)
-        const territory = state.map.territories[neighbours.tid];
-        props.isNeighbour = !!territory &&
-            territory.neighbours.indexOf(ownProps.id) >= 0;
-    }
-
-    return props;
-};
-
-export default connect(
-    mapToProps,
-    { selectTerritory, hoverTerritory }
-)(Territory);
+export default connect((state, ownProps) => ({
+    myColor: getSelf(state).color,
+    isActive: isActive(state, ownProps),
+    isNeighbour: isNeighbour(state, ownProps),
+    placement: getPlacement(state, ownProps),
+}), { selectTerritory, hoverTerritory })(Territory);

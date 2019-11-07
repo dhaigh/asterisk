@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import Circle from './Circle'
 import Territory from './Territory'
-import { intKeyEntries } from 'utils';
+import { getSelf } from 'selectors';
 
 class Map extends PureComponent {
     state = {
@@ -21,17 +21,16 @@ class Map extends PureComponent {
 
     render() {
         const [ x, y ] = this.state.mousePos;
-        const { color, troopCount } = this.props.player;
-        const territories = intKeyEntries(this.props.map.territories);
+        const { color, troopCount } = this.props.self;
+        const territories = Object.values(this.props.map.territories);
 
         return <svg className="map" onMouseMove={this.handleMouseMove}>
             {/* make all the <path>s and <Circle>s */}
-            {territories.map(([tid, t]) => {
+            {territories.map(t => {
                 const { color } = this.props.map.continents[t.continentId];
 
                 return <Territory
-                    key={tid}
-                    id={tid}
+                    key={t.id}
                     territory={t}
                     continentColor={color}
                 />;
@@ -46,5 +45,5 @@ class Map extends PureComponent {
 
 export default connect(state => ({
     map: state.map,
-    player: state.players[state.myId],
+    self: getSelf(state),
 }))(Map)

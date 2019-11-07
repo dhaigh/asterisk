@@ -37,9 +37,3 @@ export const buildAdjacencyMap = list => {
         });
     });
 };
-
-export const intKeyEntries = object => {
-    return Object.entries(object).map(([key, value]) => {
-        return [parseInt(key, 10), value];
-    });
-};

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { intKeyEntries } from 'utils';
+import { getPlayers, getHoverTerritory } from 'selectors';
 import PlayerItem from './PlayerItem';
 
 const Panel = props => {
@@ -8,9 +8,9 @@ const Panel = props => {
         <h1>Asterisk</h1>
         <section className="players">
             <h2>Players</h2>
-            {intKeyEntries(props.players).map(([pid, player]) => {
-                return <PlayerItem key={pid} player={player} />;
-            })}
+            {props.players.map(player => 
+                <PlayerItem key={player.id} player={player} />
+            )}
         </section>
 
         <section className="territory">
@@ -20,8 +20,6 @@ const Panel = props => {
 };
 
 export default connect(state => ({
-    myId: state.myId,
-    players: state.players,
-    hoverTerritory: state.neighbours.tid ?
-        state.map.territories[state.neighbours.tid] : null,
+    players: getPlayers(state),
+    hoverTerritory: getHoverTerritory(state),
 }))(Panel);

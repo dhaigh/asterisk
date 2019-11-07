@@ -6,7 +6,7 @@ export default (placements = initialPlacements, action) => {
     if (action.type === types.INIT) {
         const newPlacements = {};
 
-        action.map.continents.forEach(continent => {
+        action.data.map.continents.forEach(continent => {
             continent.territories.forEach(territory => {
                 newPlacements[territory.id] = {
                     playerId: null,
