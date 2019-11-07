@@ -35,6 +35,18 @@ const getNeighbours = state => {
 
 const getId = (_, props) => props.territory.id;
 
+export const getPlacement = (state, props) => {
+    return state.placements[getId(null, props)];
+};
+
+export const getOwnerColor = (state, props) => {
+    const placement = getPlacement(state, props);
+    if (placement) {
+        return state.players.byId[placement.ownerId].color;
+    }
+    return null;
+};
+
 export const getHoverTerritory = state => {
     const tid = state.neighbours.tid;
 
@@ -66,8 +78,4 @@ export const isNeighbour = (state, props) => {
     }
 
     return false;
-};
-
-export const getPlacement = (state, props) => {
-    return state.placements[getId(null, props)];
 };

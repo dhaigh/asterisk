@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { darken } from 'polished'
 import Circle from './Circle'
 import { selectTerritory, hoverTerritory } from 'actions'
-import { getSelf, isActive, isNeighbour, getPlacement } from 'selectors';
+import { getPlacement, getOwnerColor, isActive, isNeighbour } from 'selectors';
 
 class Territory extends PureComponent {
     handleClick = () => {
@@ -34,11 +34,11 @@ class Territory extends PureComponent {
             />
 
             {/* don't need to render circle if there's no troops */}
-            {this.props.placement.numTroops > 0 &&
+            {this.props.placement &&
                 <Circle
                     x={territory.circle[0]}
                     y={territory.circle[1]}
-                    color={this.props.myColor}
+                    color={this.props.ownerColor}
                     count={this.props.placement.numTroops}
                 />
             }
@@ -47,8 +47,8 @@ class Territory extends PureComponent {
 }
 
 export default connect((state, ownProps) => ({
-    myColor: getSelf(state).color,
+    placement: getPlacement(state, ownProps),
+    ownerColor: getOwnerColor(state, ownProps),
     isActive: isActive(state, ownProps),
     isNeighbour: isNeighbour(state, ownProps),
-    placement: getPlacement(state, ownProps),
 }), { selectTerritory, hoverTerritory })(Territory);

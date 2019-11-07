@@ -3,32 +3,35 @@ import * as types from 'actions/types';
 const initialPlacements = {};
 
 export default (placements = initialPlacements, action) => {
-    if (action.type === types.INIT) {
-        const newPlacements = {};
-
-        action.data.map.continents.forEach(continent => {
-            continent.territories.forEach(territory => {
-                newPlacements[territory.id] = {
-                    playerId: null,
-                    numTroops: 0,
-                };
-            });
-        });
-
-        return newPlacements;
-
-    } else if (action.type === types.PLACE) {
+    if (action.type === types.CLAIM) {
         const { territoryId, playerId } = action;
         const placement = placements[territoryId];
 
-        if (placement.playerId !== playerId && placement.playerId !== null) {
+        if (placement) {
+            // can't claim a territory if it is already claimed
             return placements;
         }
 
         return {
             ...placements,
             [territoryId]: {
-                playerId,
+                ownerId: playerId,
+                numTroops: 1,
+            },
+        };
+    } else if (action.type === types.PLACE) {
+        const { territoryId, playerId } = action;
+        const placement = placements[territoryId];
+
+        // can't place when another player already owns it
+        if (placement.ownerId !== playerId) {
+            return placements;
+        }
+
+        return {
+            ...placements,
+            [territoryId]: {
+                ...placement,
                 numTroops: placement.numTroops + 1,
             },
         };

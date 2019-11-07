@@ -16,12 +16,32 @@ export const load = () => {
                 id: 1,
                 name: 'Geddy',
                 color: '#006aff',
-                troopCount: 14,
             },
         }));
+        dispatch(playerJoined({
+            id: 2,
+            name: 'Alex',
+            color: '#ff0022',
+        }));
+        dispatch(playerJoined({
+            id: 3,
+            name: 'Neil',
+            color: '#ff8800',
+        }));
+        dispatch(startGame([2, 3, 1]));
         return Promise.resolve();
     };
 };
+
+export const startGame = playerOrder => ({
+    type: types.START_GAME,
+    playerOrder,
+});
+
+export const playerJoined = player => ({
+    type: types.PLAYER_JOINED,
+    player,
+});
 
 export const hoverTerritory = territoryId => ({
     type: types.HOVER_TERRITORY,
@@ -33,7 +53,13 @@ export const setViewingNeighbours = on => ({
     on,
 });
 
-const place = (territoryId, playerId) => ({
+const claim = (territoryId, playerId) => ({
+    type: types.CLAIM,
+    territoryId,
+    playerId,
+});
+
+export const place = (territoryId, playerId) => ({
     type: types.PLACE,
     territoryId,
     playerId,
@@ -43,18 +69,13 @@ export const selectTerritory = territoryId => {
     return (dispatch, getState) => {
         const state = getState();
 
-        // can't place when neighbour mode is on (shift key)
+        // can't claim when neighbour mode is on (shift key)
         if (state.neighbours.on) {
             return;
         }
 
         const self = getSelf(state);
 
-        // can't place once you've run out
-        if (self.troopCount === 0) {
-            return;
-        }
-
-        dispatch(place(territoryId, self.id));
+        dispatch(claim(territoryId, self.id));
     };
 };

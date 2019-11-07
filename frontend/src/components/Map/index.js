@@ -22,17 +22,15 @@ class Map extends PureComponent {
     render() {
         const [ x, y ] = this.state.mousePos;
         const { color, troopCount } = this.props.self;
-        const territories = Object.values(this.props.map.territories);
+        const { territories, continents } = this.props.map;
 
         return <svg className="map" onMouseMove={this.handleMouseMove}>
             {/* make all the <path>s and <Circle>s */}
-            {territories.map(t => {
-                const { color } = this.props.map.continents[t.continentId];
-
+            {Object.values(territories).map(t => {
                 return <Territory
                     key={t.id}
                     territory={t}
-                    continentColor={color}
+                    continentColor={continents[t.continentId].color}
                 />;
             })}
 

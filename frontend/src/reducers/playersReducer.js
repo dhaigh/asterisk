@@ -1,22 +1,9 @@
 import * as types from 'actions/types';
 
 const initialPlayers = {
-    byId: {
-        2: {
-            id: 2,
-            name: 'Alex',
-            color: '#ff0022',
-            troopCount: 13,
-        },
-        3: {
-            id: 3,
-            name: 'Neil',
-            color: '#ff8800',
-            troopCount: 13,
-        },
-    },
+    byId: {},
     myId: -1,
-    order: [2, 3],
+    order: [],
 };
 
 export default (players = initialPlayers, action) => {
@@ -29,22 +16,25 @@ export default (players = initialPlayers, action) => {
                 ...players.byId,
                 [me.id]: me,
             },
-            order: [me.id, ...players.order],
+            order: [me.id],
         };
 
-    } else if (action.type === types.PLACE) {
-        const { playerId } = action;
-        const player = players.byId[playerId];
-
+    } else if (action.type === types.PLAYER_JOINED) {
+        const { player } = action;
         return {
             ...players,
             byId: {
                 ...players.byId,
-                [playerId]: {
-                    ...player,
-                    troopCount: player.troopCount - 1,
-                },
+                [player.id]: player,
             },
+            order: [...players.order, player.id],
+        };
+
+    } else if (action.type === types.START_GAME) {
+        // the order is shuffled when the game starts
+        return {
+            ...players,
+            order: action.playerOrder,
         };
     }
 
