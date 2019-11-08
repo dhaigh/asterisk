@@ -79,3 +79,11 @@ export const isNeighbour = (state, props) => {
 
     return false;
 };
+
+// -----------------------------------------------------------------------------
+// game stuff
+
+export const whoseTurn = state => {
+    const index = (state.game.turn - 1) % state.players.order.length;
+    return state.players.byId[state.players.order[index]];
+};

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import Circle from './Circle'
 import Territory from './Territory'
-import { getSelf } from 'selectors';
+import { whoseTurn } from 'selectors';
 
 class Map extends PureComponent {
     state = {
@@ -21,7 +21,7 @@ class Map extends PureComponent {
 
     render() {
         const [ x, y ] = this.state.mousePos;
-        const { color, troopCount } = this.props.self;
+        const { color } = this.props.player;
         const { territories, continents } = this.props.map;
 
         return <svg className="map" onMouseMove={this.handleMouseMove}>
@@ -35,7 +35,7 @@ class Map extends PureComponent {
             })}
 
             {/* tooltip troop count */}
-            <Circle x={x - 2} y={y - 2} count={troopCount} color={color} />
+            <Circle x={x - 2} y={y - 2} color={color} />
 
         </svg>;
     }
@@ -43,5 +43,5 @@ class Map extends PureComponent {
 
 export default connect(state => ({
     map: state.map,
-    self: getSelf(state),
+    player: whoseTurn(state),
 }))(Map)

@@ -19,6 +19,7 @@ export default (placements = initialPlacements, action) => {
                 numTroops: 1,
             },
         };
+
     } else if (action.type === types.PLACE) {
         const { territoryId, playerId } = action;
         const placement = placements[territoryId];
