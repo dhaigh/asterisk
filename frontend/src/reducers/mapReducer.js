@@ -30,6 +30,7 @@ export default (map = initialMap, action) => {
                 id: continent.id,
                 name: continent.name,
                 color: continent.color,
+                armies: continent.armies,
             };
         });
 
