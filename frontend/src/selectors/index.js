@@ -24,7 +24,13 @@ export const getPlayers = createSelector(
 // territory stuff
 
 export const getTerritoryById = (state, tid) => {
-    return state.map.territories.byId[tid];
+    const territory = state.map.territories.byId[tid];
+    const continent = state.map.continents.byId[territory.continentId];
+
+    return {
+        ...territory,
+        continent,
+    };
 };
 
 // all of the below is specific to <Territory /> components:
@@ -48,7 +54,8 @@ const getNeighbours = state => {
 };
 
 const selectIsNeighbour = createSelector(
-    getTerritoryId, getNeighbours,
+    getTerritoryId,
+    getNeighbours,
     (tid, neighbours) => neighbours.indexOf(tid) >= 0
 );
 
@@ -67,19 +74,14 @@ const territoryClassName = (state, props) => {
 };
 
 const _getTerritory = createSelector(
-    state => state.map.territories, getTerritoryId,
-    (territories, tid) => territories.byId[tid]
-);
-
-const getContinent = createSelector(
-    state => state.map.continents, _getTerritory,
-    (continents, territory) => {
-        return continents.byId[territory.continentId];
-    }
+    state => state,
+    getTerritoryId,
+    (state, tid) => getTerritoryById(state, tid)
 );
 
 const getOwner = createSelector(
-    state => state.players, _getTerritory,
+    state => state.players,
+    _getTerritory,
     (players, territory) => {
         if (territory.ownerId !== null) {
             return players.byId[territory.ownerId];
@@ -89,16 +91,33 @@ const getOwner = createSelector(
 );
 
 export const getTerritory = createSelector(
-    _getTerritory, getContinent, getOwner, territoryClassName,
-    (territory, continent, owner, className) => {
+    _getTerritory, getOwner, territoryClassName,
+    (territory, owner, className) => {
         return {
             ...territory,
-            continent,
             owner,
             className,
         };
     }
 );
+
+const selectTerritories = state => {
+    return state.map.territories.allIds.map(tid => {
+        return getTerritoryById(state, tid);
+    });
+};
+
+export const selectUnclaimedTerritories = createSelector(
+    selectTerritories,
+    territories => {
+        const unclaimed = territories.filter(t => t.ownerId === null);
+        if (unclaimed.length > 7) {
+            return [];
+        }
+        return unclaimed;
+    }
+);
+
 
 // -----------------------------------------------------------------------------
 // game stuff

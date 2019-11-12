@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { getPlayers, getHoverTerritory } from 'selectors';
-import PlayerItem from './PlayerItem';
+import {
+    getPlayers, getHoverTerritory, selectUnclaimedTerritories
+} from 'selectors';
+import Item from './Item';
 
 const Panel = props => {
     return <div className="panel">
@@ -11,9 +13,23 @@ const Panel = props => {
         </section>
         <section className="players">
             <h2>Players</h2>
-            {props.players.map(player => 
-                <PlayerItem key={player.id} player={player} />
+            {props.players.map(player =>
+                <Item
+                    key={player.id}
+                    color={player.color}
+                    text={player.name}
+                />
             )}
+            {props.unclaimed.length > 0 && <>
+                <h2>Still Unclaimed</h2>
+                {props.unclaimed.map(territory =>
+                    <Item
+                        key={territory.id}
+                        color={territory.continent.color}
+                        text={territory.name}
+                    />
+                )}
+            </>}
         </section>
 
         <section className="territory">
@@ -26,4 +42,5 @@ export default connect(state => ({
     mode: state.game.mode,
     players: getPlayers(state),
     hoverTerritory: getHoverTerritory(state),
+    unclaimed: selectUnclaimedTerritories(state),
 }))(Panel);
