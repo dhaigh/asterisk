@@ -1,49 +1,75 @@
 import * as types from 'actions/types';
-
-/// num players -> number of reinforcements after claiming
-export const ARMIES_AS_REINFORCEMENTS = {
-    2: 40,
-    3: 35,
-    4: 30,
-    5: 25,
-    6: 20,
-};
-
-export const MIN_ARMIES_PER_TURN = 3;
-export const ARMIES_PER_3_COUNTRIES = 1;
-
-export const modes = {
-    CLAIMING: 'claiming',
-    REINFORCING: 'reinforcing',
-    PLACING: 'placing',
-};
+import * as consts from 'utils/constants';
 
 const initialGame = {
-    mode: modes.CLAIMING,
+    mode: consts.M_PREGAME,
     turn: -1,
+    armiesInHand: {},
 };
 
-export default (game = initialGame, action, map) => {
+export default (game = initialGame, action, map, players) => {
     if (action.type === types.START_GAME) {
         return {
             ...game,
-            turn: 1,
+            mode: consts.M_CLAIMING,
+
+            // the first turn is turn 0
+            turn: 0,
         };
 
-    } else if (action.type === types.CLAIM && map) {
-        // should always be 42 but it's nice to get the number of territories
-        // from the map
-        const numTerritories = Object.keys(map.territories).length;
+    } else if (action.type === types.PLACE) {
+        const player = players.byId[action.playerId];
+        const numPlayers = players.order.length;
 
-        return {
-            ...game,
-            turn: game.turn + 1,
+        if (game.mode === consts.M_CLAIMING) {
+            const nextTurn = game.turn + 1;
 
-            // after 41 territories have been claimed it will be turn 42, at
-            // which point we switch to placing
-            mode: game.turn === numTerritories ? modes.REINFORCING : modes.CLAIMING,
-        };
+            if (nextTurn === map.territories.allIds.length) {
+                // after all territories have been claimed we switch to
+                // reinforcing
+                return {
+                    ...game,
+                    turn: nextTurn,
+                    mode: consts.M_REINFORCING,
+                };
+            }
 
+            return {
+                ...game,
+                turn: nextTurn,
+            };
+
+        } else if (game.mode === consts.M_REINFORCING) {
+            if (player.armies === 1) {
+                // increment turn if player has placed their last army
+                const turn = game.turn + 1;
+
+                return {
+                    ...game,
+                    turn,
+
+                    // if we're back to the first player, placing can begin.
+                    //
+                    // TODO: in async multiplayer mode this logic will be
+                    // different because players can reinforce simultaneously,
+                    // so perhaps reinforcing will only take one turn?
+                    mode: turn % numPlayers === 0 ?
+                            consts.M_PLACING : consts.M_REINFORCING,
+                };
+            }
+
+        } else if (game.mode === consts.M_PLACING) {
+            if (player.armies === 1) {
+                // increment turn if player has placed their last army
+                const turn = game.turn + 1;
+
+                return {
+                    ...game,
+                    turn,
+                    // TODO: attack mode
+                };
+            }
+        }
     }
 
     return game;

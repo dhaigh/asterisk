@@ -1,6 +1,7 @@
 import * as types from './types';
+import * as consts from 'utils/constants';
 import map from 'map.json';
-import { whoseTurn } from 'selectors';
+import { getTerritoryById, whoseTurn } from 'selectors';
 
 const init = data => ({
     type: types.INIT,
@@ -9,7 +10,7 @@ const init = data => ({
 
 export const load = () => {
     return (dispatch, getState) => {
-        // todo: get from server
+        // TODO: get from server
         dispatch(init({
             map,
             me: {
@@ -32,48 +33,72 @@ export const load = () => {
         // this order should be randomised
         dispatch(startGame([2, 3, 1]));
 
-        dispatch(claim(1, 2));
-        dispatch(claim(2, 3));
-        dispatch(claim(3, 1));
-        dispatch(claim(4, 2));
-        dispatch(claim(5, 3));
-        dispatch(claim(6, 1));
-        dispatch(claim(7, 2));
-        dispatch(claim(8, 3));
-        dispatch(claim(9, 1));
-        dispatch(claim(10, 2));
-        dispatch(claim(11, 3));
-        dispatch(claim(12, 1));
-        dispatch(claim(13, 2));
-        dispatch(claim(14, 3));
-        dispatch(claim(15, 1));
-        dispatch(claim(16, 2));
-        dispatch(claim(17, 3));
-        dispatch(claim(18, 1));
-        dispatch(claim(19, 2));
-        dispatch(claim(20, 3));
-        dispatch(claim(21, 1));
-        dispatch(claim(22, 2));
-        dispatch(claim(23, 3));
-        dispatch(claim(24, 1));
-        dispatch(claim(25, 2));
-        dispatch(claim(26, 3));
-        dispatch(claim(27, 1));
-        dispatch(claim(28, 2));
-        dispatch(claim(29, 3));
-        dispatch(claim(30, 1));
-        dispatch(claim(31, 2));
-        dispatch(claim(32, 3));
-        dispatch(claim(33, 1));
-        dispatch(claim(34, 2));
-        dispatch(claim(35, 3));
-        dispatch(claim(36, 1));
-        dispatch(claim(37, 2));
-        dispatch(claim(38, 3));
-        dispatch(claim(39, 1));
-        dispatch(claim(40, 2));
-        dispatch(claim(41, 3));
-        dispatch(claim(42, 1));
+        dispatch(place(1, 2));
+        dispatch(place(7, 3));
+        dispatch(place(8, 1));
+
+        dispatch(place(2, 2));
+        dispatch(place(9, 3));
+        dispatch(place(10, 1));
+
+        dispatch(place(3, 2));
+        dispatch(place(11, 3));
+        dispatch(place(12, 1));
+
+        dispatch(place(4, 2));
+        dispatch(place(13, 3));
+        dispatch(place(14, 1));
+
+        dispatch(place(5, 2));
+        dispatch(place(15, 3));
+        dispatch(place(16, 1));
+
+        dispatch(place(6, 2));
+        dispatch(place(17, 3));
+        dispatch(place(18, 1));
+
+        dispatch(place(19, 2));
+        dispatch(place(23, 3));
+        dispatch(place(24, 1));
+
+        dispatch(place(20, 2));
+        dispatch(place(25, 3));
+        dispatch(place(26, 1));
+
+        dispatch(place(21, 2));
+        dispatch(place(27, 3));
+        dispatch(place(28, 1));
+
+        dispatch(place(22, 2));
+        dispatch(place(29, 3));
+        dispatch(place(30, 1));
+
+        dispatch(place(31, 2));
+        dispatch(place(32, 3));
+        dispatch(place(39, 1));
+
+        dispatch(place(33, 2));
+        dispatch(place(34, 3));
+        dispatch(place(40, 1));
+
+        dispatch(place(35, 2));
+        dispatch(place(36, 3));
+        dispatch(place(41, 1));
+
+        dispatch(place(37, 2));
+        dispatch(place(38, 3));
+        dispatch(place(42, 1));
+
+        // 3 players
+        // => starting with 35
+        // => 14 territories each
+        // => 35-14 reinforcements
+        for (let i = 0; i < 21; i++)
+            dispatch(place(6, 2));
+        for (let i = 0; i < 21; i++)
+            dispatch(place(7, 3));
+        for (let i = 0; i < 20; i++)
+            dispatch(place(40, 1));
 
         return Promise.resolve();
     };
@@ -99,36 +124,47 @@ export const setViewingNeighbours = on => ({
     on,
 });
 
-const claim = (territoryId, playerId) => ({
-    type: types.CLAIM,
-    territoryId,
-    playerId,
-});
-
 export const place = (territoryId, playerId) => ({
     type: types.PLACE,
     territoryId,
     playerId,
 });
 
+export const reorderPlayers = (order) => ({
+    type: types.REORDER_PLAYERS,
+    order,
+});
+
 export const selectTerritory = territoryId => {
     return (dispatch, getState) => {
         const state = getState();
+        const { mode } = state.game;
 
         // can't claim when neighbour mode is on (shift key)
         if (state.neighbours.on) {
             return;
         }
 
-        if (state.game.mode === 'claiming') {
+        const player = whoseTurn(state);
+        const territory = getTerritoryById(state, territoryId);
+
+        if (mode === consts.M_CLAIMING) {
             // can't claim if someone else already has
-            if (state.placements[territoryId]) {
+            if (territory.ownerId !== null) {
                 return;
             }
+        } else if (territory.ownerId !== player.id) {
+            // can't place if you don't own it
+            return;
+        }
 
-            dispatch(claim(territoryId, whoseTurn(state).id));
-        } else {
-            dispatch(place(territoryId, whoseTurn(state).id));
+        dispatch(place(territoryId, player.id));
+
+        // player order is shuffled after reinforcement
+        const newMode = getState().game.mode;
+        if (mode === consts.M_REINFORCING && newMode === consts.M_PLACING) {
+            // TODO: randomize
+            dispatch(reorderPlayers([3, 2, 1]));
         }
     };
 };

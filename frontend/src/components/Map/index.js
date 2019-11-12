@@ -21,27 +21,22 @@ class Map extends PureComponent {
 
     render() {
         const [ x, y ] = this.state.mousePos;
-        const { color } = this.props.player;
-        const { territories, continents } = this.props.map;
+        const { armies, color } = this.props.player;
 
         return <svg className="map" onMouseMove={this.handleMouseMove}>
             {/* make all the <path>s and <Circle>s */}
-            {Object.values(territories).map(t => {
-                return <Territory
-                    key={t.id}
-                    territory={t}
-                    continentColor={continents[t.continentId].color}
-                />;
-            })}
+            {this.props.territoryIds.map(tid =>
+                <Territory key={tid} tid={tid} />
+            )}
 
             {/* tooltip troop count */}
-            <Circle x={x - 2} y={y - 2} color={color} />
+            <Circle x={x - 2} y={y - 2} count={armies} color={color} />
 
         </svg>;
     }
 }
 
 export default connect(state => ({
-    map: state.map,
+    territoryIds: state.map.territories.allIds,
     player: whoseTurn(state),
 }))(Map)

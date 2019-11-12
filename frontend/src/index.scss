@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    user-select: none;
 }
 
 :first-child {
@@ -94,7 +95,6 @@ path.active {
 
 text {
     fill: #fff;
-    user-select: none;
 }
 
 rect {

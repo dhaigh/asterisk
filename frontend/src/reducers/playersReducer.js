@@ -1,21 +1,67 @@
 import * as types from 'actions/types';
+import * as consts from 'utils/constants';
+import { selectTerritoriesOwned, calcArmiesToPlace } from 'selectors';
 
 const initialPlayers = {
-    byId: {},
     myId: -1,
+    byId: {},
     order: [],
 };
 
-export default (players = initialPlayers, action) => {
+const handlePlace = (players, pid, map, game) => {
+    const player = players.byId[pid];
+    const numPlayers = players.order.length;
+    let newById = players.byId;
+
+    if (game.mode === consts.M_CLAIMING) {
+        if (game.turn + 1 === map.territories.allIds.length) {
+            // all territories claimed, allocate reinforcement armies
+            // TODO: check (somewhere else, before the game starts) that we
+            // don't have more than 6 players
+
+            const numStartingArmies = consts.STARTING_NUM_ARMIES[numPlayers];
+            newById = Object.fromEntries(
+                players.order.map(pid => {
+                    const numPlaced = selectTerritoriesOwned(map, pid).length;
+                    const armies = numStartingArmies - numPlaced;
+                    return [ pid, { ...newById[pid], armies  } ];
+                })
+            );
+        }
+
+    } else if (game.mode === consts.M_REINFORCING) {
+        const armies = player.armies - 1;
+        newById = {
+            ...newById,
+            [pid]: {
+                ...player,
+                armies: armies === 0 ? calcArmiesToPlace(map, pid) : armies,
+            },
+        };
+
+    } else if (game.mode === consts.M_PLACING) {
+        const armies = player.armies - 1;
+        newById = {
+            ...newById,
+            [pid]: {
+                ...player,
+                armies: armies === 0 ? calcArmiesToPlace(map, pid) : armies,
+            },
+        };
+    }
+
+    return {
+        ...players,
+        byId: newById,
+    };
+};
+
+export default (players = initialPlayers, action, map, game) => {
     if (action.type === types.INIT) {
         const { me } = action.data;
         return {
-            ...players,
             myId: me.id,
-            byId: {
-                ...players.byId,
-                [me.id]: me,
-            },
+            byId: { [me.id]: me },
             order: [me.id],
         };
 
@@ -35,6 +81,15 @@ export default (players = initialPlayers, action) => {
         return {
             ...players,
             order: action.playerOrder,
+        };
+
+    } else if (action.type === types.PLACE) {
+        return handlePlace(players, action.playerId, map, game);
+
+    } else if (action.type === types.REORDER_PLAYERS) {
+        return {
+            ...players,
+            order: action.order,
         };
     }
 

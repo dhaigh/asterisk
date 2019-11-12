@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { darken } from 'polished'
 import Circle from './Circle'
 import { selectTerritory, hoverTerritory } from 'actions'
-import { getPlacement, getOwnerColor, isActive, isNeighbour } from 'selectors';
+import { getTerritory } from 'selectors';
 
 class Territory extends PureComponent {
     handleClick = () => {
@@ -16,30 +16,29 @@ class Territory extends PureComponent {
 
     render() {
         // from own props
-        const { territory, continentColor } = this.props;
+        const { territory } = this.props;
+        const fill = territory.continent.color;
 
         return <g
             onClick={this.handleClick}
             onMouseOver={this.handleMouseOver}
         >
             <path
-                fill={continentColor}
-                color={darken(0.2, continentColor)}
-                stroke={darken(0.2, continentColor)}
+                fill={fill}
+                color={darken(0.2, fill)}
+                stroke={darken(0.2, fill)}
                 d={territory.d}
-                className={
-                    this.props.isActive ? 'active' :
-                    this.props.isNeighbour ? 'neighbour' : null
-                }
+                className={territory.className}
             />
 
-            {/* don't need to render circle if there's no troops */}
-            {this.props.placement &&
+            {/* only render circle if territory is owned (this will only be
+                true at the start when all territories are unowned) */}
+            {territory.owner &&
                 <Circle
                     x={territory.circle[0]}
                     y={territory.circle[1]}
-                    color={this.props.ownerColor}
-                    count={this.props.placement.numTroops}
+                    color={territory.owner.color}
+                    count={territory.armies}
                 />
             }
         </g>;
@@ -47,8 +46,5 @@ class Territory extends PureComponent {
 }
 
 export default connect((state, ownProps) => ({
-    placement: getPlacement(state, ownProps),
-    ownerColor: getOwnerColor(state, ownProps),
-    isActive: isActive(state, ownProps),
-    isNeighbour: isNeighbour(state, ownProps),
+    territory: getTerritory(state, ownProps),
 }), { selectTerritory, hoverTerritory })(Territory);

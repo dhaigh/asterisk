@@ -11,3 +11,5 @@ export const START_GAME = 'start_game';
 export const HOVER_TERRITORY = 'hover_territory';
 
 export const SET_VIEWING_NEIGHBOURS = 'set_viewing_neighbours';
+
+export const REORDER_PLAYERS = 'reorder_players';

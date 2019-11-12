@@ -6,6 +6,9 @@ import PlayerItem from './PlayerItem';
 const Panel = props => {
     return <div className="panel">
         <h1>Asterisk</h1>
+        <section>
+            <p>Mode: {props.mode}</p>
+        </section>
         <section className="players">
             <h2>Players</h2>
             {props.players.map(player => 
@@ -20,6 +23,7 @@ const Panel = props => {
 };
 
 export default connect(state => ({
+    mode: state.game.mode,
     players: getPlayers(state),
     hoverTerritory: getHoverTerritory(state),
 }))(Panel);
