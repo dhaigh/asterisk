@@ -4,7 +4,7 @@
             "id": 1,
             "name": "Africa",
             "color": "#CEA252",
-            "armies": 3,
+            "bonus": 3,
             "territories": [
                 {
                     "id": 1,
@@ -54,7 +54,7 @@
             "id": 2,
             "name": "Asia",
             "color": "#BDDB8C",
-            "armies": 7,
+            "bonus": 7,
             "territories": [
                 {
                     "id": 7,
@@ -146,7 +146,7 @@
             "id": 3,
             "name": "Australia",
             "color": "#E78A94",
-            "armies": 2,
+            "bonus": 2,
             "territories": [
                 {
                     "id": 19,
@@ -182,7 +182,7 @@
             "id": 4,
             "name": "Europe",
             "color": "#CEBADE",
-            "armies": 5,
+            "bonus": 5,
             "territories": [
                 {
                     "id": 23,
@@ -239,7 +239,7 @@
             "id": 5,
             "name": "North America",
             "color": "#EFCB73",
-            "armies": 5,
+            "bonus": 5,
             "territories": [
                 {
                     "id": 30,
@@ -310,7 +310,7 @@
             "id": 6,
             "name": "South America",
             "color": "#E79273",
-            "armies": 2,
+            "bonus": 2,
             "territories": [
                 {
                     "id": 39,

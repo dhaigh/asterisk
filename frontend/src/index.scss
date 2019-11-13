@@ -10,7 +10,7 @@
 body {
     margin: 0;
     padding: 1rem;
-    font-family: sans-serif;
+    font: 1rem/1 sans-serif;
 }
 
 .clearboth {
@@ -45,19 +45,36 @@ span.key {
     border-radius: 3px;
 }
 
-section.players li {
+li.item {
     list-style: none;
-    position: relative;
-    height: 32px;
 
-    svg {
-        position: absolute;
+    &.regular {
+        margin-bottom: 1rem;
     }
 
-    span {
-        position: absolute;
-        top: 8px;
-        left: 35px;
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    svg {
+        float: left;
+    }
+
+    .contents {
+        float: left;
+        padding-left: 3px;
+    }
+
+    &.small > .contents {
+        padding-top: 2px;
+    }
+
+    &.regular > .contents {
+        padding-top: 8px;
+    }
+
+    .name {
+        margin-bottom: 0.5rem;
     }
 }
 

@@ -4,6 +4,7 @@ import {
     getPlayers, getHoverTerritory, selectUnclaimedTerritories
 } from 'selectors';
 import Item from './Item';
+import PlayerItem from './PlayerItem';
 
 const Panel = props => {
     return <div className="panel">
@@ -14,20 +15,14 @@ const Panel = props => {
         <section className="players">
             <h2>Players</h2>
             {props.players.map(player =>
-                <Item
-                    key={player.id}
-                    color={player.color}
-                    text={player.name}
-                />
+                <PlayerItem player={player} />
             )}
             {props.unclaimed.length > 0 && <>
                 <h2>Still Unclaimed</h2>
-                {props.unclaimed.map(territory =>
-                    <Item
-                        key={territory.id}
-                        color={territory.continent.color}
-                        text={territory.name}
-                    />
+                {props.unclaimed.map(t =>
+                    <Item key={t.id} color={t.continent.color}>
+                        {t.name}
+                    </Item>
                 )}
             </>}
         </section>

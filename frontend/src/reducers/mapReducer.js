@@ -73,7 +73,7 @@ export default (map = initialMap(), action, gameMode) => {
                 id: continent.id,
                 name: continent.name,
                 color: continent.color,
-                armies: continent.armies,
+                bonus: continent.bonus,
                 territoryIds: continent.territories.map(t => t.id),
             };
             newMap.continents.allIds.push(continent.id);

@@ -13,11 +13,80 @@ export const getSelf = state => {
     return state.players.byId[myId];
 };
 
-const getOrder = state => state.players.order;
-const getById = state => state.players.byId;
+// -----------------------------------------------------------------------------
+// map
+
+// returns territory IDs that are owned by a given player ID
+export const selectTerritoriesOwned = createSelector(
+    (map, _) => map.territories,
+    (_, pid) => pid,
+    (territories, pid) => {
+        return territories.allIds.filter(tid => {
+            return territories.byId[tid].ownerId === pid;
+        });
+    }
+);
+
+// returns continent IDs where every territory is owned by a given player ID
+const selectContinentsOwned = createSelector(
+    (map, _) => map,
+    (_, pid) => pid,
+    (map, pid) => {
+        // count num territories per continent
+        const countPerCont = Object.fromEntries(
+            map.continents.allIds.map(cid => [ cid, 0 ])
+        );
+
+        selectTerritoriesOwned(map, pid).forEach(tid => {
+            countPerCont[map.territories.byId[tid].continentId] += 1;
+        });
+
+        // build array of continent ids where the player has all of the
+        // territories in it
+        const owned = [];
+        Object.entries(countPerCont).forEach(([ cid, count ]) => {
+            const continent = map.continents.byId[cid];
+            if (count === continent.territoryIds.length) {
+                owned.push(continent);
+            }
+        });
+
+        return owned;
+    }
+);
+
+const calcIncomeFromTerritories = (map, pid) => {
+    return Math.floor(
+        selectTerritoriesOwned(map, pid).length / consts.ARMY_DIVISOR
+    );
+};
+
+// returns number of armies a player is entitled to place at the start of their
+// turn
+export const calcTotalIncome = (map, pid) => {
+    const numArmies = calcIncomeFromTerritories(map, pid) + sum(
+        selectContinentsOwned(map, pid).map(continent => continent.bonus)
+    );
+
+    return Math.max(numArmies, consts.MIN_ARMIES_PER_TURN);
+};
+
 export const getPlayers = createSelector(
-    getOrder, getById,
-    (order, byId) => order.map(pid => byId[pid])
+    state => state.map,
+    state => state.players,
+    (map, players) => {
+        return players.order.map(pid => {
+            const territories = selectTerritoriesOwned(map, pid);
+            const continents = selectContinentsOwned(map, pid);
+            return {
+                ...players.byId[pid],
+                income: calcTotalIncome(map, pid),
+                incomeFromTerritories: calcIncomeFromTerritories(map, pid),
+                territoryCount: territories.length,
+                continents,
+            };
+        });
+    }
 );
 
 // -----------------------------------------------------------------------------
@@ -134,56 +203,4 @@ export const whoseTurn = state => {
     // order[1] = player 3
     const index = state.game.turn % state.players.order.length;
     return state.players.byId[state.players.order[index]];
-};
-
-// returns territory IDs that are owned by a given player ID
-export const selectTerritoriesOwned = createSelector(
-    (map, _) => map.territories,
-    (_, pid) => pid,
-    (territories, pid) => {
-        return territories.allIds.filter(tid => {
-            return territories.byId[tid].ownerId === pid;
-        });
-    }
-);
-
-// returns continent IDs where every territory is owned by a given player ID
-export const selectContinentsOwned = createSelector(
-    (map, _) => map,
-    (_, pid) => pid,
-    (map, pid) => {
-        // count num territories per continent
-        const countPerCont = Object.fromEntries(
-            map.continents.allIds.map(cid => [ cid, 0 ])
-        );
-
-        selectTerritoriesOwned(map, pid).forEach(tid => {
-            countPerCont[map.territories.byId[tid].continentId] += 1;
-        });
-
-        // build array of continent ids where the player has all of the
-        // territories in it
-        const owned = [];
-        Object.entries(countPerCont).forEach(([ cid, count ]) => {
-            if (count === map.continents.byId[cid].territoryIds.length) {
-                owned.push(cid);
-            }
-        });
-
-        return owned;
-    }
-);
-
-export const calcArmiesToPlace = (map, pid) => {
-    let numArmies = Math.floor(
-        selectTerritoriesOwned(map, pid).length / consts.ARMY_DIVISOR
-    );
-
-    numArmies += sum(
-        selectContinentsOwned(map, pid).map(cid =>
-            map.continents.byId[cid].armies
-        )
-    );
-
-    return Math.max(numArmies, consts.MIN_ARMIES_PER_TURN);
 };

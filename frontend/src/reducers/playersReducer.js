@@ -1,6 +1,6 @@
 import * as types from 'actions/types';
 import * as consts from 'utils/constants';
-import { selectTerritoriesOwned, calcArmiesToPlace } from 'selectors';
+import { selectTerritoriesOwned, calcTotalIncome } from 'selectors';
 
 const initialPlayers = {
     myId: -1,
@@ -35,7 +35,7 @@ const handlePlace = (players, pid, map, game) => {
             ...newById,
             [pid]: {
                 ...player,
-                armies: armies === 0 ? calcArmiesToPlace(map, pid) : armies,
+                armies: armies === 0 ? calcTotalIncome(map, pid) : armies,
             },
         };
 
@@ -45,7 +45,7 @@ const handlePlace = (players, pid, map, game) => {
             ...newById,
             [pid]: {
                 ...player,
-                armies: armies === 0 ? calcArmiesToPlace(map, pid) : armies,
+                armies: armies === 0 ? calcTotalIncome(map, pid) : armies,
             },
         };
     }
