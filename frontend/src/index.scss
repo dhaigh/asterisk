@@ -48,6 +48,10 @@ span.key {
 li.item {
     list-style: none;
 
+    &.their-turn {
+        font-weight: bold;
+    }
+
     &.regular {
         margin-bottom: 1rem;
     }

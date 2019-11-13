@@ -2,7 +2,9 @@ import React from 'react';
 import Item from './Item';
 
 const PlayerItem = ({ player }) => {
-    return <Item key={player.id} color={player.color}>
+    const className = player.theirTurn ? 'their-turn' : null;
+
+    return <Item key={player.id} color={player.color} className={className}>
         <div className="name">
             {player.name} (+{player.income})
         </div>

@@ -3,6 +3,31 @@ import { sum } from 'utils';
 import * as consts from 'utils/constants';
 
 // -----------------------------------------------------------------------------
+// game stuff
+
+export const whoseTurn = state => {
+    // for all of the following:
+    // suppose order = [2, 3, 1] (values in order array are player IDs)
+    // ---------------------------------
+    // when turn = 0:
+    // index = 0 % 3
+    //       = 0
+    // order[0] = player 2
+    // ---------------------------------
+    // when turn = 2
+    // index = 2 % 3
+    //       = 2
+    // order[2] = player 1
+    // ---------------------------------
+    // when turn = 4
+    // index = 4 % 3
+    //       = 1
+    // order[1] = player 3
+    const index = state.game.turn % state.players.order.length;
+    return state.players.byId[state.players.order[index]];
+};
+
+// -----------------------------------------------------------------------------
 // players
 export const getSelf = state => {
     const { myId } = state.players;
@@ -71,23 +96,23 @@ export const calcTotalIncome = (map, pid) => {
     return Math.max(numArmies, consts.MIN_ARMIES_PER_TURN);
 };
 
-export const getPlayers = createSelector(
-    state => state.map,
-    state => state.players,
-    (map, players) => {
-        return players.order.map(pid => {
-            const territories = selectTerritoriesOwned(map, pid);
-            const continents = selectContinentsOwned(map, pid);
-            return {
-                ...players.byId[pid],
-                income: calcTotalIncome(map, pid),
-                incomeFromTerritories: calcIncomeFromTerritories(map, pid),
-                territoryCount: territories.length,
-                continents,
-            };
-        });
-    }
-);
+export const getPlayers = state => {
+    const { map, players } = state;
+
+    return players.order.map(pid => {
+        const territories = selectTerritoriesOwned(map, pid);
+        const continents = selectContinentsOwned(map, pid);
+
+        return {
+            ...players.byId[pid],
+            income: calcTotalIncome(map, pid),
+            incomeFromTerritories: calcIncomeFromTerritories(map, pid),
+            territoryCount: territories.length,
+            theirTurn: whoseTurn(state).id === pid,
+            continents,
+        };
+    });
+};
 
 // -----------------------------------------------------------------------------
 // territory stuff
@@ -179,28 +204,3 @@ export const getTerritory = createSelector(
         };
     }
 );
-
-// -----------------------------------------------------------------------------
-// game stuff
-
-export const whoseTurn = state => {
-    // for all of the following:
-    // suppose order = [2, 3, 1] (values in order array are player IDs)
-    // ---------------------------------
-    // when turn = 0:
-    // index = 0 % 3
-    //       = 0
-    // order[0] = player 2
-    // ---------------------------------
-    // when turn = 2
-    // index = 2 % 3
-    //       = 2
-    // order[2] = player 1
-    // ---------------------------------
-    // when turn = 4
-    // index = 4 % 3
-    //       = 1
-    // order[1] = player 3
-    const index = state.game.turn % state.players.order.length;
-    return state.players.byId[state.players.order[index]];
-};

@@ -4,8 +4,13 @@ import { darken } from 'polished'
 const Item = (props) => {
     const size = props.small ? 14 : 24;
     const containerSize = size + 4;
+    const className = [
+        'item',
+        props.small ? 'small' : 'regular',
+        props.className
+    ].join(' ');
 
-    return <li className={'item ' + (props.small ? 'small' : 'regular')}>
+    return <li className={className}>
         <svg width={containerSize} height={containerSize}>
             <circle
                 cx={containerSize/2}
