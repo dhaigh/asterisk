@@ -23,80 +23,16 @@ export const getPlayers = createSelector(
 // -----------------------------------------------------------------------------
 // territory stuff
 
-export const getTerritoryById = (state, tid) => {
-    const territory = state.map.territories.byId[tid];
-    const continent = state.map.continents.byId[territory.continentId];
+export const getTerritoryById = createSelector(
+    state => state.map,
+    (_, tid) => tid,
+    (map, tid) => {
+        const territory = map.territories.byId[tid];
+        const continent = map.continents.byId[territory.continentId];
 
-    return {
-        ...territory,
-        continent,
-    };
-};
-
-// all of the below is specific to <Territory /> components:
-
-const getTerritoryId = (_, props) => props.tid;
-
-export const getHoverTerritory = state => {
-    const tid = state.neighbours.tid;
-    if (tid !== null) {
-        return state.map.territories.byId[tid];
-    }
-    return null;
-};
-
-const getNeighbours = state => {
-    const territory = getHoverTerritory(state);
-    if (territory) {
-        return territory.neighbours;
-    }
-    return [];
-};
-
-const selectIsNeighbour = createSelector(
-    getTerritoryId,
-    getNeighbours,
-    (tid, neighbours) => neighbours.indexOf(tid) >= 0
-);
-
-const territoryClassName = (state, props) => {
-    const { neighbours } = state;
-
-    if (neighbours.on) {
-        if (getTerritoryId(null, props) === neighbours.tid) {
-            return 'active';
-        } else if (selectIsNeighbour(state, props)) {
-            return 'neighbour';
-        }
-    }
-
-    return null;
-};
-
-const _getTerritory = createSelector(
-    state => state,
-    getTerritoryId,
-    (state, tid) => getTerritoryById(state, tid)
-);
-
-const getOwner = createSelector(
-    state => state.players,
-    _getTerritory,
-    (players, territory) => {
-        if (territory.ownerId !== null) {
-            return players.byId[territory.ownerId];
-        }
-        return null;
-    }
-);
-
-export const getTerritory = createSelector(
-    _getTerritory, getOwner, territoryClassName,
-    (territory, owner, className) => {
         return {
             ...territory,
-            owner,
-            className,
+            continent,
         };
     }
 );
@@ -118,6 +54,62 @@ export const selectUnclaimedTerritories = createSelector(
     }
 );
 
+// all of the below is specific to <Territory /> components:
+
+const getTid = (_, props) => props.tid;
+
+export const getHoverTerritory = state => {
+    const tid = state.neighbours.tid;
+    if (tid !== null) {
+        return state.map.territories.byId[tid];
+    }
+    return null;
+};
+
+const getNeighbours = state => {
+    const territory = getHoverTerritory(state);
+    if (territory) {
+        return territory.neighbours;
+    }
+    return [];
+};
+
+const selectIsNeighbour = createSelector(
+    getTid,
+    getNeighbours,
+    (tid, neighbours) => neighbours.indexOf(tid) >= 0
+);
+
+const territoryClassName = (state, props) => {
+    const { neighbours } = state;
+
+    if (neighbours.on) {
+        if (getTid(null, props) === neighbours.tid) {
+            return 'active';
+        } else if (selectIsNeighbour(state, props)) {
+            return 'neighbour';
+        }
+    }
+
+    return null;
+};
+
+export const getTerritory = createSelector(
+    state => state,
+    getTid,
+    territoryClassName,
+    (state, tid, className) => {
+        const territory = getTerritoryById(state, tid);
+        const owner = territory.ownerId === null ? null :
+            state.players.byId[territory.ownerId];
+
+        return {
+            ...territory,
+            owner,
+            className,
+        };
+    }
+);
 
 // -----------------------------------------------------------------------------
 // game stuff
