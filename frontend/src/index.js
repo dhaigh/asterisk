@@ -18,7 +18,7 @@ const store = createStore(
         applyMiddleware(thunk),
 
         // if devTools are not present then this will evaluate to null
-        devTools()
+        devTools({ maxAge: 1000 })
     )
 );
 
