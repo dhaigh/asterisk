@@ -12,11 +12,13 @@ const Panel = props => {
         <section>
             <p>Mode: {props.mode}</p>
         </section>
+
         <section className="players">
             <h2>Players</h2>
             {props.players.map(player =>
-                <PlayerItem player={player} />
+                <PlayerItem key={player.id} player={player} />
             )}
+
             {props.unclaimed.length > 0 && <>
                 <h2>Still Unclaimed</h2>
                 {props.unclaimed.map(t =>
