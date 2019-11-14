@@ -33,72 +33,72 @@ export const load = () => {
         // this order should be randomised
         dispatch(startGame([2, 3, 1]));
 
-        dispatch(place(1, 2));
-        dispatch(place(7, 3));
-        dispatch(place(8, 1));
+        dispatch(selectTerritory(1));
+        dispatch(selectTerritory(7));
+        dispatch(selectTerritory(8));
 
-        dispatch(place(2, 2));
-        dispatch(place(9, 3));
-        dispatch(place(10, 1));
+        dispatch(selectTerritory(2));
+        dispatch(selectTerritory(9));
+        dispatch(selectTerritory(10));
 
-        dispatch(place(3, 2));
-        dispatch(place(11, 3));
-        dispatch(place(12, 1));
+        dispatch(selectTerritory(3));
+        dispatch(selectTerritory(11));
+        dispatch(selectTerritory(12));
 
-        dispatch(place(4, 2));
-        dispatch(place(13, 3));
-        dispatch(place(14, 1));
+        dispatch(selectTerritory(4));
+        dispatch(selectTerritory(13));
+        dispatch(selectTerritory(14));
 
-        dispatch(place(5, 2));
-        dispatch(place(15, 3));
-        dispatch(place(16, 1));
+        dispatch(selectTerritory(5));
+        dispatch(selectTerritory(15));
+        dispatch(selectTerritory(16));
 
-        dispatch(place(6, 2));
-        dispatch(place(17, 3));
-        dispatch(place(18, 1));
+        dispatch(selectTerritory(6));
+        dispatch(selectTerritory(17));
+        dispatch(selectTerritory(18));
 
-        dispatch(place(19, 2));
-        dispatch(place(23, 3));
-        dispatch(place(24, 1));
+        dispatch(selectTerritory(19));
+        dispatch(selectTerritory(23));
+        dispatch(selectTerritory(24));
 
-        dispatch(place(20, 2));
-        dispatch(place(25, 3));
-        dispatch(place(26, 1));
+        dispatch(selectTerritory(20));
+        dispatch(selectTerritory(25));
+        dispatch(selectTerritory(26));
 
-        dispatch(place(21, 2));
-        dispatch(place(27, 3));
-        dispatch(place(28, 1));
+        dispatch(selectTerritory(21));
+        dispatch(selectTerritory(27));
+        dispatch(selectTerritory(28));
 
-        dispatch(place(22, 2));
-        dispatch(place(29, 3));
-        dispatch(place(30, 1));
+        dispatch(selectTerritory(22));
+        dispatch(selectTerritory(29));
+        dispatch(selectTerritory(30));
 
-        dispatch(place(31, 2));
-        dispatch(place(32, 3));
-        dispatch(place(39, 1));
+        dispatch(selectTerritory(31));
+        dispatch(selectTerritory(32));
+        dispatch(selectTerritory(39));
 
-        dispatch(place(33, 2));
-        dispatch(place(34, 3));
-        dispatch(place(40, 1));
+        dispatch(selectTerritory(33));
+        dispatch(selectTerritory(34));
+        dispatch(selectTerritory(40));
 
-        dispatch(place(35, 2));
-        dispatch(place(36, 3));
-        dispatch(place(41, 1));
+        dispatch(selectTerritory(35));
+        dispatch(selectTerritory(36));
+        dispatch(selectTerritory(41));
 
-        dispatch(place(37, 2));
-        dispatch(place(38, 3));
-        dispatch(place(42, 1));
+        dispatch(selectTerritory(37));
+        dispatch(selectTerritory(38));
+        dispatch(selectTerritory(42));
 
         // 3 players
         // => starting with 35
         // => 14 territories each
         // => 35-14 reinforcements
         for (let i = 0; i < 21; i++)
-            dispatch(place(6, 2));
+            dispatch(selectTerritory(6));
         for (let i = 0; i < 21; i++)
-            dispatch(place(7, 3));
-        for (let i = 0; i < 20; i++)
-            dispatch(place(40, 1));
+            dispatch(selectTerritory(7));
+        for (let i = 0; i < 21; i++)
+            dispatch(selectTerritory(40));
 
         return Promise.resolve();
     };
