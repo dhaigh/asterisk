@@ -29,9 +29,10 @@ class Map extends PureComponent {
                 <Territory key={tid} tid={tid} />
             )}
 
-            {/* tooltip troop count */}
-            <Circle x={x - 2} y={y - 2} count={armies} color={color} />
-
+            {/* tooltip army count */}
+            {armies &&
+                <Circle x={x - 2} y={y - 2} count={armies} color={color} />
+            }
         </svg>;
     }
 }
