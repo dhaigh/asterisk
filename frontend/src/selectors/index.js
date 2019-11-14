@@ -87,20 +87,25 @@ const selectContinentsOwned = createSelector(
     }
 );
 
-const calcIncomeFromTerritories = (map, pid) => {
+const calcTerritoryIncome = (map, pid) => {
     return Math.floor(
         selectTerritoriesOwned(map, pid).length / consts.ARMY_DIVISOR
     );
 };
 
+const calcContinentIncome = (map, pid) => {
+    const continents = selectContinentsOwned(map, pid);
+    return sum(continents.map(c => c.bonus));
+};
+
 // returns number of armies a player is entitled to place at the start of their
 // turn
 export const calcTotalIncome = (map, pid) => {
-    const numArmies = calcIncomeFromTerritories(map, pid) + sum(
-        selectContinentsOwned(map, pid).map(continent => continent.bonus)
-    );
+    const territoryIncome = calcTerritoryIncome(map, pid);
+    const continentIncome = calcContinentIncome(map, pid);
+    const combined = territoryIncome + continentIncome;
 
-    return Math.max(numArmies, consts.MIN_ARMIES_PER_TURN);
+    return Math.max(combined, consts.MIN_ARMIES_PER_TURN);
 };
 
 export const getPlayers = state => {
@@ -113,7 +118,7 @@ export const getPlayers = state => {
         return {
             ...players.byId[pid],
             income: calcTotalIncome(map, pid),
-            incomeFromTerritories: calcIncomeFromTerritories(map, pid),
+            incomeFromTerritories: calcTerritoryIncome(map, pid),
             territoryCount: territories.length,
             theirTurn: whoseTurn(state).id === pid,
             continents,
