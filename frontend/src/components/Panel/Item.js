@@ -10,7 +10,7 @@ const Item = (props) => {
         props.className
     ].join(' ');
 
-    return <li className={className}>
+    return <div className={className}>
         <svg width={containerSize} height={containerSize}>
             <circle
                 cx={containerSize/2}
@@ -23,7 +23,7 @@ const Item = (props) => {
         </svg>
         <div className="contents">{props.children}</div>
         <br className="clearboth" />
-    </li>;
+    </div>;
 };
 
 export default Item;

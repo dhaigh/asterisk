@@ -45,9 +45,7 @@ span.key {
     border-radius: 3px;
 }
 
-li.item {
-    list-style: none;
-
+.item {
     &.their-turn {
         font-weight: bold;
     }
