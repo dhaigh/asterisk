@@ -40,12 +40,11 @@ const handlePlace = (players, pid, map, game) => {
         };
 
     } else if (game.mode === consts.M_PLACING) {
-        const armies = player.armies - 1;
         newById = {
             ...newById,
             [pid]: {
                 ...player,
-                armies: armies === 0 ? calcTotalIncome(map, pid) : armies,
+                armies: player.armies - 1
             },
         };
     }

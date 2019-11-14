@@ -16,3 +16,4 @@ export const M_PREGAME = 'pregame';
 export const M_CLAIMING = 'claiming';
 export const M_REINFORCING = 'reinforcing';
 export const M_PLACING = 'placing';
+export const M_ATTACKING = 'attacking';

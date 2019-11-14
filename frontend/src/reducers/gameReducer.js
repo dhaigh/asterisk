@@ -1,10 +1,12 @@
 import * as types from 'actions/types';
 import * as consts from 'utils/constants';
+import { whoseTurn } from 'selectors';
 
 const initialGame = {
     mode: consts.M_PREGAME,
     turn: -1,
     armiesInHand: {},
+    attackingTid: null,
 };
 
 export default (game = initialGame, action, map, players) => {
@@ -20,6 +22,7 @@ export default (game = initialGame, action, map, players) => {
     } else if (action.type === types.PLACE) {
         const player = players.byId[action.playerId];
         const numPlayers = players.order.length;
+        const placedLastArmy = player.armies === 1;
 
         if (game.mode === consts.M_CLAIMING) {
             const nextTurn = game.turn + 1;
@@ -40,8 +43,7 @@ export default (game = initialGame, action, map, players) => {
             };
 
         } else if (game.mode === consts.M_REINFORCING) {
-            if (player.armies === 1) {
-                // increment turn if player has placed their last army
+            if (placedLastArmy) {
                 const turn = game.turn + 1;
 
                 return {
@@ -59,14 +61,22 @@ export default (game = initialGame, action, map, players) => {
             }
 
         } else if (game.mode === consts.M_PLACING) {
-            if (player.armies === 1) {
-                // increment turn if player has placed their last army
-                const turn = game.turn + 1;
-
+            if (placedLastArmy) {
                 return {
                     ...game,
-                    turn,
-                    // TODO: attack mode
+                    mode: consts.M_ATTACKING,
+                };
+            }
+
+        } else if (game.mode === consts.M_ATTACKING) {
+            const tid = action.territoryId;
+            const ownersTurn = whoseTurn(game, players).id
+                === map.territories.byId[tid].ownerId;
+
+            if (game.attackingTid === null || ownersTurn) {
+                return {
+                    ...game,
+                    attackingTid: action.territoryId,
                 };
             }
         }

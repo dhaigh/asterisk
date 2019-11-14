@@ -5,7 +5,14 @@ import * as consts from 'utils/constants';
 // -----------------------------------------------------------------------------
 // game stuff
 
-export const whoseTurn = state => {
+// returns player obj of player whose turn it is
+// can be called either of the following ways:
+// whoseTurn(state)
+// whoseTurn(game, players)
+export const whoseTurn = (...args) => {
+    const game = args.length === 1 ? args[0].game : args[0];
+    const players = args.length === 1 ? args[0].players : args[1];
+
     // for all of the following:
     // suppose order = [2, 3, 1] (values in order array are player IDs)
     // ---------------------------------
@@ -23,8 +30,8 @@ export const whoseTurn = state => {
     // index = 4 % 3
     //       = 1
     // order[1] = player 3
-    const index = state.game.turn % state.players.order.length;
-    return state.players.byId[state.players.order[index]];
+    const index = game.turn % players.order.length;
+    return players.byId[players.order[index]];
 };
 
 // -----------------------------------------------------------------------------
@@ -160,29 +167,35 @@ export const getHoverTerritory = state => {
     return null;
 };
 
-const getNeighbours = state => {
-    const territory = getHoverTerritory(state);
+const getNeighbours = (state, activeTid) => {
+    const territory = state.map.territories.byId[activeTid];
     if (territory) {
         return territory.neighbours;
     }
     return [];
 };
 
-const selectIsNeighbour = createSelector(
-    getTid,
+const selectActiveOrNeighbour = createSelector(
     getNeighbours,
-    (tid, neighbours) => neighbours.indexOf(tid) >= 0
+    (_, activeTid, __) => activeTid,
+    (_, __, tid) => tid,
+    (neighbours, activeTid, tid) => {
+        return tid === activeTid ? 'active' :
+               neighbours.indexOf(tid) >= 0 ? 'neighbour' : null;
+    }
 );
 
 const territoryClassName = (state, props) => {
-    const { neighbours } = state;
+    const { game, neighbours } = state;
+    const tid = getTid(null, props)
 
     if (neighbours.on) {
-        if (getTid(null, props) === neighbours.tid) {
-            return 'active';
-        } else if (selectIsNeighbour(state, props)) {
-            return 'neighbour';
-        }
+        // <shift> neighbour viewing mode
+        return selectActiveOrNeighbour(state, neighbours.tid, tid);
+
+    } else if (game.attackingTid !== null) {
+        // check attacking territory
+        return selectActiveOrNeighbour(state, game.attackingTid, tid);
     }
 
     return null;
