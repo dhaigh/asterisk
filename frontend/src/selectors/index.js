@@ -238,18 +238,27 @@ export const getHoverTerritory = state => {
     return null;
 };
 
-const getNeighbours = (state, activeTid) => {
+const getNeighbours = (state, activeTid, enemiesOnly) => {
     const territory = state.map.territories.byId[activeTid];
+
     if (territory) {
-        return territory.neighbours;
+        if (enemiesOnly) {
+            return territory.neighbours.filter(neighbourId => {
+                const neighbour = state.map.territories.byId[neighbourId];
+                return neighbour.ownerId !== territory.ownerId;
+            });
+        } else {
+            return territory.neighbours;
+        }
     }
+
     return [];
 };
 
 const selectActiveOrNeighbour = createSelector(
     getNeighbours,
-    (_, activeTid, __) => activeTid,
-    (_, __, tid) => tid,
+    (_, activeTid) => activeTid,
+    (_, __, ___, tid) => tid,
     (neighbours, activeTid, tid) => {
         return tid === activeTid ? 'active' :
                neighbours.indexOf(tid) >= 0 ? 'neighbour' : null;
@@ -262,11 +271,11 @@ const territoryClassName = (state, props) => {
 
     if (neighbours.on) {
         // <shift> neighbour viewing mode
-        return selectActiveOrNeighbour(state, neighbours.tid, tid);
+        return selectActiveOrNeighbour(state, neighbours.tid, false, tid);
 
     } else if (game.attackingTid !== null) {
         // check attacking territory
-        return selectActiveOrNeighbour(state, game.attackingTid, tid);
+        return selectActiveOrNeighbour(state, game.attackingTid, true, tid);
     }
 
     return null;
