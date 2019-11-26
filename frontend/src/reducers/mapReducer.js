@@ -1,4 +1,5 @@
 import * as types from 'actions/types';
+import * as consts from 'utils/constants';
 import { buildAdjacencyMap } from 'utils';
 
 const initialMap = () => ({
@@ -12,12 +13,12 @@ const initialMap = () => ({
     },
 });
 
-const handlePlace = (tById, action, gameMode) => {
+const handleSelect = (tById, action, gameMode) => {
     const tid = action.territoryId;
     const pid = action.playerId;
     const territory = tById[tid];
 
-    if (gameMode === 'claiming') {
+    if (gameMode === consts.M_CLAIMING) {
         if (tById[tid].ownerId === null) {
             // can only claim a territory if it hasn't already been claimed
             return {
@@ -30,7 +31,7 @@ const handlePlace = (tById, action, gameMode) => {
             };
         }
 
-    } else if (gameMode === 'reinforcing' || gameMode === 'placing') {
+    } else if (gameMode === consts.M_REINFORCING || gameMode === consts.M_PLACING) {
         // can't place when another player already owns it
         if (territory.ownerId === pid) {
             return {
@@ -48,7 +49,11 @@ const handlePlace = (tById, action, gameMode) => {
 
 export default (map = initialMap(), action, gameMode) => {
     if (action.type === types.INIT) {
+        // since INIT actions only get made once we probably could just do a
+        // shallow clone of initialMap and go from there, but this way is more
+        // robust and lets us dispatch INIT multiple times without side effects
         const newMap = initialMap();
+
         const { neighbours, continents } = action.data.map;
         const neighbourMapping = buildAdjacencyMap(neighbours);
 
@@ -81,12 +86,12 @@ export default (map = initialMap(), action, gameMode) => {
 
         return newMap;
 
-    } else if (action.type === types.PLACE) {
+    } else if (action.type === types.SELECT) {
         return {
             ...map,
             territories: {
                 ...map.territories,
-                byId: handlePlace(map.territories.byId, action, gameMode),
+                byId: handleSelect(map.territories.byId, action, gameMode),
             },
         };
     }

@@ -1,6 +1,8 @@
 import * as types from 'actions/types';
 import * as consts from 'utils/constants';
-import { selectTerritoriesOwned, calcTotalIncome } from 'selectors';
+import {
+    whoIsNext, selectTerritoriesOwned, calcTotalIncome
+} from 'selectors';
 
 const initialPlayers = {
     myId: -1,
@@ -8,7 +10,7 @@ const initialPlayers = {
     order: [],
 };
 
-const handlePlace = (players, pid, map, game) => {
+const handleSelect = (players, pid, map, game) => {
     const player = players.byId[pid];
     const numPlayers = players.order.length;
     let newById = players.byId;
@@ -82,13 +84,27 @@ export default (players = initialPlayers, action, map, game) => {
             order: action.playerOrder,
         };
 
-    } else if (action.type === types.PLACE) {
-        return handlePlace(players, action.playerId, map, game);
+    } else if (action.type === types.SELECT) {
+        return handleSelect(players, action.playerId, map, game);
 
     } else if (action.type === types.REORDER_PLAYERS) {
         return {
             ...players,
             order: action.order,
+        };
+
+    } else if (action.type === types.END_TURN) {
+        const nextPlayer = whoIsNext(game, players);
+
+        return {
+            ...players,
+            byId: {
+                ...players.byId,
+                [nextPlayer.id]: {
+                    ...nextPlayer,
+                    armies: calcTotalIncome(map, nextPlayer.id),
+                },
+            },
         };
     }
 

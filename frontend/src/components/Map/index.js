@@ -23,7 +23,9 @@ class Map extends PureComponent {
         const [ x, y ] = this.state.mousePos;
         const { armies, color } = this.props.player;
 
-        return <svg className="map" onMouseMove={this.handleMouseMove}>
+        return <svg className="map" onMouseMove={this.handleMouseMove} style={{
+            borderColor: color,
+        }}>
             {/* make all the <path>s and <Circle>s */}
             {this.props.territoryIds.map(tid =>
                 <Territory key={tid} tid={tid} />

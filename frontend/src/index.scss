@@ -41,7 +41,7 @@ span.key {
     height: 660px;
     padding: 0.5rem;
     width: 300px;
-    background: #ffce80;
+    border: 5px solid;
     border-radius: 3px;
 }
 
@@ -87,13 +87,26 @@ section.territory {
     font-size: 0.9rem;
 }
 
+.attack-summary div {
+    margin-bottom: 1rem;
+    text-align: center;
+
+    span.country {
+        padding: 0.5rem 0.8rem;;
+        color: #fff;
+        border-radius: 0.5rem;
+        display: inline-block;
+    }
+}
+
 // -----------------------------------------------------------------------------
 // svg stuff
 svg.map {
     float: left;
     height: 660px;
     width: 1150px;
-    border: 2px solid #000;
+    border: 5px solid;
+    border-radius: 3px;
 }
 
 path:hover {

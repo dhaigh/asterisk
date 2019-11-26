@@ -7,6 +7,7 @@ import * as consts from 'utils/constants';
 
 // returns player obj of player whose turn it is
 // can be called either of the following ways:
+//
 // whoseTurn(state)
 // whoseTurn(game, players)
 export const whoseTurn = (...args) => {
@@ -32,6 +33,55 @@ export const whoseTurn = (...args) => {
     // order[1] = player 3
     const index = game.turn % players.order.length;
     return players.byId[players.order[index]];
+};
+
+export const whoIsNext = (game, players) => {
+    const index = (game.turn + 1) % players.order.length;
+    return players.byId[players.order[index]];
+};
+
+export const selectCanBeAttacking = (tid, ...args) => {
+    const game = args.length === 1 ? args[0].game : args[0];
+    const map = args.length === 1 ? args[0].map : args[1];
+    const players = args.length === 1 ? args[0].players : args[2];
+
+    // if no attacking territory is set OR it is set but the player wishes to
+    // attack from a different territory
+    const ownersTurn = whoseTurn(game, players).id
+        === map.territories.byId[tid].ownerId;
+
+    const territory = map.territories.byId[tid];
+
+    if (territory.armies === 1) {
+        // cant attack from a territory with only 1 army
+        return false;
+    }
+
+    return ownersTurn;
+};
+
+export const selectCanBeAttacked = (tid, ...args) => {
+    const game = args.length === 1 ? args[0].game : args[0];
+    const map = args.length === 1 ? args[0].map : args[1];
+    const players = args.length === 1 ? args[0].players : args[2];
+
+    // if no attacking territory is set OR it is set but the player wishes to
+    // attack from a different territory
+    const ownersTurn = whoseTurn(game, players).id
+        === map.territories.byId[tid].ownerId;
+
+    if (game.attackingTid === null) {
+        // cant set attacked territory if attacking territory not yet set
+        return false;
+    }
+
+    const attacking = map.territories.byId[game.attackingTid];
+
+    if (attacking.neighbours.indexOf(tid) === -1) {
+        return false;
+    }
+
+    return !ownersTurn;
 };
 
 // -----------------------------------------------------------------------------
@@ -131,13 +181,21 @@ export const getPlayers = state => {
 
 export const getTerritoryById = createSelector(
     state => state.map,
+    state => state.players,
     (_, tid) => tid,
-    (map, tid) => {
+    (map, players, tid) => {
+        if (tid === null) {
+            return null;
+        }
+
         const territory = map.territories.byId[tid];
         const continent = map.continents.byId[territory.continentId];
+        const owner = territory.ownerId === null ? null :
+            players.byId[territory.ownerId];
 
         return {
             ...territory,
+            owner,
             continent,
         };
     }
@@ -159,6 +217,14 @@ export const selectUnclaimedTerritories = createSelector(
         return unclaimed;
     }
 );
+
+export const selectAttacking = state => {
+    return getTerritoryById(state, state.game.attackingTid);
+};
+
+export const selectAttacked = state => {
+    return getTerritoryById(state, state.game.attackedTid);
+};
 
 // all of the below is specific to <Territory /> components:
 
@@ -212,12 +278,9 @@ export const getTerritory = createSelector(
     territoryClassName,
     (state, tid, className) => {
         const territory = getTerritoryById(state, tid);
-        const owner = territory.ownerId === null ? null :
-            state.players.byId[territory.ownerId];
 
         return {
             ...territory,
-            owner,
             className,
         };
     }

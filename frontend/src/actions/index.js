@@ -1,7 +1,9 @@
 import * as types from './types';
 import * as consts from 'utils/constants';
 import map from 'map.json';
-import { getTerritoryById, whoseTurn } from 'selectors';
+import {
+    getTerritoryById, whoseTurn
+} from 'selectors';
 
 const init = data => ({
     type: types.INIT,
@@ -100,6 +102,18 @@ export const load = () => {
         for (let i = 0; i < 21; i++)
             dispatch(selectTerritory(40));
 
+        // place
+        dispatch(selectTerritory(34));
+        dispatch(selectTerritory(34));
+        dispatch(selectTerritory(34));
+        dispatch(selectTerritory(34));
+
+        // // choose attacking
+        dispatch(selectTerritory(34));
+
+        // choose attacked
+        dispatch(selectTerritory(33));
+
         return Promise.resolve();
     };
 };
@@ -124,8 +138,8 @@ export const setViewingNeighbours = on => ({
     on,
 });
 
-export const place = (territoryId, playerId) => ({
-    type: types.PLACE,
+export const select = (territoryId, playerId) => ({
+    type: types.SELECT,
     territoryId,
     playerId,
 });
@@ -153,12 +167,15 @@ export const selectTerritory = territoryId => {
             if (territory.ownerId !== null) {
                 return;
             }
-        } else if (territory.ownerId !== player.id) {
-            // can't place if you don't own it
-            return;
+        } else if (mode === consts.M_REINFORCING ||
+                   mode === consts.M_PLACING) {
+            if (territory.ownerId !== player.id) {
+                // can't place if you don't own it
+                return;
+            }
         }
 
-        dispatch(place(territoryId, player.id));
+        dispatch(select(territoryId, player.id));
 
         // player order is shuffled after reinforcement
         const newMode = getState().game.mode;
@@ -168,3 +185,7 @@ export const selectTerritory = territoryId => {
         }
     };
 };
+
+export const endTurn = () => ({
+    type: types.END_TURN,
+});

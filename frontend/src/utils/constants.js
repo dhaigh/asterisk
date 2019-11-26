@@ -9,11 +9,11 @@ export const STARTING_NUM_ARMIES = {
 
 export const MIN_ARMIES_PER_TURN = 3;
 
-// for every x territories, you get floor(x / ARMY_DIVISOR) territories.
+// for every x territories, you get floor(x / ARMY_DIVISOR) armies per turn.
 export const ARMY_DIVISOR = 3;
 
-export const M_PREGAME = 'pregame';
-export const M_CLAIMING = 'claiming';
-export const M_REINFORCING = 'reinforcing';
-export const M_PLACING = 'placing';
-export const M_ATTACKING = 'attacking';
+export const M_PREGAME = 'Pregame';
+export const M_CLAIMING = 'Claiming';
+export const M_REINFORCING = 'Reinforcing';
+export const M_PLACING = 'Placing';
+export const M_ATTACKING = 'Attacking';
