@@ -101,6 +101,9 @@ section.territory {
 
 // -----------------------------------------------------------------------------
 // svg stuff
+$yellow: #ff0;
+$red: #f00;
+
 svg.map {
     float: left;
     height: 660px;
@@ -113,16 +116,22 @@ path:hover {
     fill: currentColor;
 }
 
+
 path.neighbour {
-    &, &:hover {
-        fill: #ff0;
-    }
+    &, &:hover { fill: $yellow; }
 }
 
 path.active {
-    &, &:hover {
-        fill: #f00;
-    }
+    &, &:hover { fill: $red; }
+}
+
+path.attacked {
+    fill: url(#crosshatch);
+}
+
+pattern .square {
+  &.yellow { fill: $yellow; }
+  &.red { fill: $red; }
 }
 
 text {

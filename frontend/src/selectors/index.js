@@ -275,7 +275,12 @@ const territoryClassName = (state, props) => {
 
     } else if (game.attackingTid !== null) {
         // check attacking territory
-        return selectActiveOrNeighbour(state, game.attackingTid, true, tid);
+        if (tid === game.attackedTid) {
+            return 'attacked';
+        } else {
+            // check attacking territory
+            return selectActiveOrNeighbour(state, game.attackingTid, true, tid);
+        }
     }
 
     return null;
