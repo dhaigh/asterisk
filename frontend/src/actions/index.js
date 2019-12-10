@@ -2,7 +2,7 @@ import * as types from './types';
 import * as consts from 'utils/constants';
 import map from 'map.json';
 import {
-    getTerritoryById, whoseTurn
+    getTerritoryById, whoseTurn, selectAttackingArmies, selectDefendingArmies
 } from 'selectors';
 
 const init = data => ({
@@ -109,10 +109,10 @@ export const load = () => {
         dispatch(selectTerritory(34));
 
         // // choose attacking
-        dispatch(selectTerritory(34));
+        // dispatch(selectTerritory(34));
 
         // choose attacked
-        dispatch(selectTerritory(33));
+        // dispatch(selectTerritory(33));
 
         return Promise.resolve();
     };
@@ -189,3 +189,37 @@ export const selectTerritory = territoryId => {
 export const endTurn = () => ({
     type: types.END_TURN,
 });
+
+export const setAttackingWith = numArmies => ({
+    type: types.SET_ATTACKING_WITH,
+    numArmies,
+});
+
+export const setDefendingWith = numArmies => ({
+    type: types.SET_DEFENDING_WITH,
+    numArmies,
+});
+
+const diceRolled = (attacking, defending) => ({
+    type: types.DICE_ROLLED,
+    attacking, defending,
+});
+
+const dieRoll = () => 1 + Math.floor(Math.random() * 6);
+
+export const rollDice = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        const attacking = [];
+        const defending = [];
+
+        for (let i = 0; i < selectAttackingArmies(state); i++) {
+            attacking.push(dieRoll());
+        }
+        for (let i = 0; i < selectDefendingArmies(state); i++) {
+            defending.push(dieRoll());
+        }
+
+        dispatch(diceRolled(attacking, defending));
+    };
+};

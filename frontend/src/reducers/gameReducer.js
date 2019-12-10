@@ -6,8 +6,12 @@ const initialGame = {
     mode: consts.M_PREGAME,
     turn: -1,
     armiesInHand: {},
-    attackingTid: null,
-    attackedTid: null,
+    conflict: {
+        // attackingTid: null,
+        // attackingArmies: null,
+        // defendingTid: null,
+        // defendingArmies: null,
+    },
 };
 
 const handleSelect = (game, action, map, players) => {
@@ -65,14 +69,18 @@ const handleSelect = (game, action, map, players) => {
             // chose the attacking territory
             return {
                 ...game,
-                attackingTid: action.territoryId,
-                attackedTid: null,
+                conflict: {
+                    attackingTid: action.territoryId,
+                },
             };
         } else if (selectCanBeAttacked(action.territoryId, game, map, players)) {
             // chose the attacked territory
             return {
                 ...game,
-                attackedTid: action.territoryId,
+                conflict: {
+                    ...game.conflict,
+                    defendingTid: action.territoryId,
+                },
             };
         }
     }
@@ -98,8 +106,25 @@ export default (game = initialGame, action, map, players) => {
             ...game,
             mode: consts.M_PLACING,
             turn: game.turn + 1,
-            attackingTid: null,
-            attackedTid: null,
+            conflict: {},
+        };
+
+    } else if (action.type === types.SET_ATTACKING_WITH) {
+        return {
+            ...game,
+            conflict: {
+                ...game.conflict,
+                attackingArmies: action.numArmies,
+            },
+        };
+
+    } else if (action.type === types.SET_DEFENDING_WITH) {
+        return {
+            ...game,
+            conflict: {
+                ...game.conflict,
+                defendingArmies: action.numArmies,
+            },
         };
     }
 

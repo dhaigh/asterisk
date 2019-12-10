@@ -29,10 +29,10 @@ class Map extends PureComponent {
             <pattern id="crosshatch" x="0" y="0" width="20" height="20"
                 patternUnits="userSpaceOnUse"
             >
-                <rect class="square yellow" x="0" y="0" width="10" height="10" />
-                <rect class="square red" x="10" y="0" width="10" height="10" />
-                <rect class="square yellow" x="10" y="10" width="10" height="10" />
-                <rect class="square red" x="0" y="10" width="10" height="10" />
+                <rect className="square yellow" x="0" y="0" width="10" height="10" />
+                <rect className="square red" x="10" y="0" width="10" height="10" />
+                <rect className="square yellow" x="10" y="10" width="10" height="10" />
+                <rect className="square red" x="0" y="10" width="10" height="10" />
             </pattern>
 
             {/* make all the <path>s and <Circle>s */}

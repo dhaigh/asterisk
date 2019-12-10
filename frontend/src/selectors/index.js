@@ -69,19 +69,28 @@ export const selectCanBeAttacked = (tid, ...args) => {
     // attack from a different territory
     const ownersTurn = whoseTurn(game, players).id
         === map.territories.byId[tid].ownerId;
+    const { attackingTid } = game.conflict;
 
-    if (game.attackingTid === null) {
+    if (attackingTid == null) {
         // cant set attacked territory if attacking territory not yet set
         return false;
     }
 
-    const attacking = map.territories.byId[game.attackingTid];
+    const attacking = map.territories.byId[attackingTid];
 
     if (attacking.neighbours.indexOf(tid) === -1) {
         return false;
     }
 
     return !ownersTurn;
+};
+
+export const selectAttackingArmies = state => {
+    return state.game.conflict.attackingArmies || null;
+};
+
+export const selectDefendingArmies = state => {
+    return state.game.conflict.defendingArmies || null;
 };
 
 // -----------------------------------------------------------------------------
@@ -184,7 +193,7 @@ export const getTerritoryById = createSelector(
     state => state.players,
     (_, tid) => tid,
     (map, players, tid) => {
-        if (tid === null) {
+        if (tid == null) {
             return null;
         }
 
@@ -218,12 +227,12 @@ export const selectUnclaimedTerritories = createSelector(
     }
 );
 
-export const selectAttacking = state => {
-    return getTerritoryById(state, state.game.attackingTid);
+export const selectAttackingTerritory = state => {
+    return getTerritoryById(state, state.game.conflict.attackingTid);
 };
 
-export const selectAttacked = state => {
-    return getTerritoryById(state, state.game.attackedTid);
+export const selectDefendingTerritory = state => {
+    return getTerritoryById(state, state.game.conflict.defendingTid);
 };
 
 // all of the below is specific to <Territory /> components:
@@ -275,11 +284,12 @@ const territoryClassName = (state, props) => {
 
     } else if (game.attackingTid !== null) {
         // check attacking territory
-        if (tid === game.attackedTid) {
+        if (tid === game.conflict.defendingTid) {
             return 'attacked';
         } else {
             // check attacking territory
-            return selectActiveOrNeighbour(state, game.attackingTid, true, tid);
+            return selectActiveOrNeighbour(
+                state, game.conflict.attackingTid, true, tid);
         }
     }
 
