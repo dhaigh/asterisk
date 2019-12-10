@@ -38,4 +38,16 @@ export const buildAdjacencyMap = list => {
     });
 };
 
+// sums an array of numbers
 export const sum = arr => arr.reduce((a, b) => a + b, 0);
+
+// the basic sort comparator
+export const cmp = (a, b) => {
+    if (a < b) {
+        return -1;
+    } else if (a === b) {
+        return 0;
+    } else {
+        return 1;
+    }
+};

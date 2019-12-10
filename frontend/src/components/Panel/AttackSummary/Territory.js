@@ -1,4 +1,5 @@
 import React from 'react';
+import { DIE_CHARS } from 'utils/constants';
 
 const Territory = props => {
     const { territory } = props;
@@ -9,6 +10,9 @@ const Territory = props => {
                 backgroundColor: territory.owner.color,
             }}>
                 {territory.name} ({territory.armies})
+                <div className="dice">
+                    {props.dice.map(die => DIE_CHARS[die])}
+                </div>
             </span>
         </div>
         : <div>{props.children}</div> || null;

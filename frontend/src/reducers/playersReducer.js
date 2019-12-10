@@ -10,10 +10,11 @@ const initialPlayers = {
     order: [],
 };
 
-const handleSelect = (players, pid, map, game) => {
+const handleSelect = (players, pid, state) => {
+    const { map, game } = state;
     const player = players.byId[pid];
     const numPlayers = players.order.length;
-    let newById = players.byId;
+    let byId = players.byId;
 
     if (game.mode === consts.M_CLAIMING) {
         if (game.turn + 1 === map.territories.allIds.length) {
@@ -22,19 +23,19 @@ const handleSelect = (players, pid, map, game) => {
             // don't have more than 6 players
 
             const numStartingArmies = consts.STARTING_NUM_ARMIES[numPlayers];
-            newById = Object.fromEntries(
+            byId = Object.fromEntries(
                 players.order.map(pid => {
                     const numPlaced = selectTerritoriesOwned(map, pid).length;
                     const armies = numStartingArmies - numPlaced;
-                    return [ pid, { ...newById[pid], armies  } ];
+                    return [ pid, { ...byId[pid], armies  } ];
                 })
             );
         }
 
     } else if (game.mode === consts.M_REINFORCING) {
         const armies = player.armies - 1;
-        newById = {
-            ...newById,
+        byId = {
+            ...byId,
             [pid]: {
                 ...player,
                 armies: armies === 0 ? calcTotalIncome(map, pid) : armies,
@@ -42,8 +43,8 @@ const handleSelect = (players, pid, map, game) => {
         };
 
     } else if (game.mode === consts.M_PLACING) {
-        newById = {
-            ...newById,
+        byId = {
+            ...byId,
             [pid]: {
                 ...player,
                 armies: player.armies - 1
@@ -53,11 +54,13 @@ const handleSelect = (players, pid, map, game) => {
 
     return {
         ...players,
-        byId: newById,
+        byId,
     };
 };
 
-export default (players = initialPlayers, action, map, game) => {
+export default (players = initialPlayers, action, state) => {
+    const { map } = state;
+
     if (action.type === types.INIT) {
         const { me } = action.data;
         return {
@@ -85,7 +88,7 @@ export default (players = initialPlayers, action, map, game) => {
         };
 
     } else if (action.type === types.SELECT) {
-        return handleSelect(players, action.playerId, map, game);
+        return handleSelect(players, action.playerId, state);
 
     } else if (action.type === types.REORDER_PLAYERS) {
         return {
@@ -94,7 +97,7 @@ export default (players = initialPlayers, action, map, game) => {
         };
 
     } else if (action.type === types.END_TURN) {
-        const nextPlayer = whoIsNext(game, players);
+        const nextPlayer = whoIsNext(state);
 
         return {
             ...players,

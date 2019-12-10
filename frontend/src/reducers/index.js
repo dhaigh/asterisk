@@ -4,18 +4,15 @@ import gameReducer from './gameReducer'
 import neighboursReducer from './neighboursReducer';
 
 export default (state = {}, action) => {
-    const gameMode = state.game && state.game.mode;
+    const map = mapReducer(state.map, action, state);
 
-    const map = mapReducer(state.map, action, gameMode);
-
-    const game = gameReducer(state.game, action, map, state.players);
-
-    const players = playersReducer(state.players, action, map, state.game);
+    // these both can use updated map but they want the previous versions of
+    // each other
+    const game = gameReducer(state.game, action, {...state, map});
+    const players = playersReducer(state.players, action, {...state, map});
 
     return {
-        map,
-        players,
-        game,
+        map, game, players,
         neighbours: neighboursReducer(state.neighbours, action),
     };
 };

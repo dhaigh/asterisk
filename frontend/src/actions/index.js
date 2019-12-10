@@ -109,10 +109,12 @@ export const load = () => {
         dispatch(selectTerritory(34));
 
         // // choose attacking
-        // dispatch(selectTerritory(34));
+        dispatch(selectTerritory(34));
 
-        // choose attacked
-        // dispatch(selectTerritory(33));
+        // choose defending
+        dispatch(selectTerritory(33));
+
+        dispatch(setAttackingWith(3));
 
         return Promise.resolve();
     };
@@ -202,7 +204,7 @@ export const setDefendingWith = numArmies => ({
 
 const diceRolled = (attacking, defending) => ({
     type: types.DICE_ROLLED,
-    attacking, defending,
+    dice: { attacking, defending },
 });
 
 const dieRoll = () => 1 + Math.floor(Math.random() * 6);
@@ -223,3 +225,7 @@ export const rollDice = () => {
         dispatch(diceRolled(attacking, defending));
     };
 };
+
+export const applyDiceRoll = () => ({
+    type: types.APPLY_DICE_ROLL,
+});

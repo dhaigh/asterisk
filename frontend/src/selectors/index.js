@@ -6,14 +6,7 @@ import * as consts from 'utils/constants';
 // game stuff
 
 // returns player obj of player whose turn it is
-// can be called either of the following ways:
-//
-// whoseTurn(state)
-// whoseTurn(game, players)
-export const whoseTurn = (...args) => {
-    const game = args.length === 1 ? args[0].game : args[0];
-    const players = args.length === 1 ? args[0].players : args[1];
-
+export const whoseTurn = ({ game, players }) => {
     // for all of the following:
     // suppose order = [2, 3, 1] (values in order array are player IDs)
     // ---------------------------------
@@ -35,54 +28,38 @@ export const whoseTurn = (...args) => {
     return players.byId[players.order[index]];
 };
 
-export const whoIsNext = (game, players) => {
+export const whoIsNext = ({ game, players }) => {
     const index = (game.turn + 1) % players.order.length;
     return players.byId[players.order[index]];
 };
 
-export const selectCanBeAttacking = (tid, ...args) => {
-    const game = args.length === 1 ? args[0].game : args[0];
-    const map = args.length === 1 ? args[0].map : args[1];
-    const players = args.length === 1 ? args[0].players : args[2];
-
-    // if no attacking territory is set OR it is set but the player wishes to
-    // attack from a different territory
-    const ownersTurn = whoseTurn(game, players).id
-        === map.territories.byId[tid].ownerId;
-
-    const territory = map.territories.byId[tid];
-
-    if (territory.armies === 1) {
+export const selectCanBeAttacking = (tid, state) => {
+    const territory = state.map.territories.byId[tid];
+    return (
         // cant attack from a territory with only 1 army
-        return false;
-    }
+        territory.armies > 1  &&
 
-    return ownersTurn;
+        // must have at lease one enemy territory
+        getNeighbours(state, tid, true).length > 0 &&
+
+        // it must be the territory owner's turn
+        whoseTurn(state).id === territory.ownerId
+    );
 };
 
-export const selectCanBeAttacked = (tid, ...args) => {
-    const game = args.length === 1 ? args[0].game : args[0];
-    const map = args.length === 1 ? args[0].map : args[1];
-    const players = args.length === 1 ? args[0].players : args[2];
+export const selectCanBeAttacked = (tid, state) => {
+    const territory = state.map.territories.byId[tid];
+    const { attackingTid } = state.game.conflict;
+    return (
+        // there must be an attacking territory
+        attackingTid &&
 
-    // if no attacking territory is set OR it is set but the player wishes to
-    // attack from a different territory
-    const ownersTurn = whoseTurn(game, players).id
-        === map.territories.byId[tid].ownerId;
-    const { attackingTid } = game.conflict;
+        // it must be neighbours with the attacking territory
+        territory.neighbours.indexOf(attackingTid) >= 0 &&
 
-    if (attackingTid == null) {
-        // cant set attacked territory if attacking territory not yet set
-        return false;
-    }
-
-    const attacking = map.territories.byId[attackingTid];
-
-    if (attacking.neighbours.indexOf(tid) === -1) {
-        return false;
-    }
-
-    return !ownersTurn;
+        // it must NOT be the territory owner's turn
+        whoseTurn(state).id !== territory.ownerId
+    );
 };
 
 export const selectAttackingArmies = state => {
@@ -91,6 +68,12 @@ export const selectAttackingArmies = state => {
 
 export const selectDefendingArmies = state => {
     return state.game.conflict.defendingArmies || null;
+};
+
+export const selectDice = state => {
+    return state.game.conflict.dice || {
+        attacking: [], defending: []
+    };
 };
 
 // -----------------------------------------------------------------------------

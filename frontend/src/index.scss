@@ -150,7 +150,13 @@ section.territory {
         display: inline-block;
     }
 
-    .dice {
-        font-size: 4rem;
+    span.beats {
+        position: relative;
+        top: -12px;
     }
+}
+
+.die, .dice {
+    font-size: 4rem;
+    line-height: 2.8rem;
 }

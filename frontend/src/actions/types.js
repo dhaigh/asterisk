@@ -21,3 +21,5 @@ export const SET_ATTACKING_WITH = 'set attacking with';
 export const SET_DEFENDING_WITH = 'set defending with';
 
 export const DICE_ROLLED = 'dice rolled';
+
+export const APPLY_DICE_ROLL = 'apply dice roll';

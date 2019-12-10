@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
-import { endTurn } from 'actions';
 import Conflict from './Conflict';
 import Territory from './Territory';
+import { endTurn } from 'actions';
 import {
-    whoseTurn, selectAttackingTerritory, selectDefendingTerritory
+    selectDice, whoseTurn, selectAttackingTerritory, selectDefendingTerritory
 } from 'selectors';
 
 class AttackSummary extends PureComponent {
@@ -13,7 +13,9 @@ class AttackSummary extends PureComponent {
     };
 
     render() {
-        const { attacking, defending, playerName } = this.props;
+        const {
+            dice, playerName, attacking, defending
+        } = this.props;
 
         return <div className="attack-summary">
             <div>
@@ -21,13 +23,13 @@ class AttackSummary extends PureComponent {
                 <button onClick={this.handleEndTurn}>End</button>
             </div>
 
-            <Territory territory={attacking}>
+            <Territory territory={attacking} dice={dice.attacking}>
                 Choose a country to attack from
             </Territory>
 
             {attacking && <>
                 <div>{'\u2694'}</div>
-                <Territory territory={defending}>
+                <Territory territory={defending} dice={dice.defending}>
                     Choose a country to attack
                 </Territory>
                 </>
@@ -39,6 +41,7 @@ class AttackSummary extends PureComponent {
 }
 
 export default connect(state => ({
+    dice: selectDice(state),
     playerName: whoseTurn(state).name,
     attacking: selectAttackingTerritory(state),
     defending: selectDefendingTerritory(state),

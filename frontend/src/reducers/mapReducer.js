@@ -47,7 +47,7 @@ const handleSelect = (tById, action, gameMode) => {
     return tById;
 };
 
-export default (map = initialMap(), action, gameMode) => {
+export default (map = initialMap(), action, {game}) => {
     if (action.type === types.INIT) {
         // since INIT actions only get made once we probably could just do a
         // shallow clone of initialMap and go from there, but this way is more
@@ -91,7 +91,33 @@ export default (map = initialMap(), action, gameMode) => {
             ...map,
             territories: {
                 ...map.territories,
-                byId: handleSelect(map.territories.byId, action, gameMode),
+                byId: handleSelect(map.territories.byId, action, game.mode),
+            },
+        };
+
+    } else if (action.type === types.APPLY_DICE_ROLL) {
+        const { attackingTid, defendingTid, dice } = game.conflict;
+        const attacking = {...map.territories.byId[attackingTid]};
+        const defending = {...map.territories.byId[defendingTid]};
+
+        attacking.armies -= dice.losses.attacking;
+        defending.armies -= dice.losses.defending;
+
+        if (defending.armies <= 0) {
+            defending.ownerId = attacking.ownerId;
+            defending.armies = dice.attacking.length;
+            attacking.armies -= dice.attacking.length;
+        }
+
+        return {
+            ...map,
+            territories: {
+                ...map.territories,
+                byId: {
+                    ...map.territories.byId,
+                    [attackingTid]: attacking,
+                    [defendingTid]: defending,
+                },
             },
         };
     }

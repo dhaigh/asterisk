@@ -1,4 +1,5 @@
 import * as types from 'actions/types';
+import { cmp } from 'utils';
 import * as consts from 'utils/constants';
 import { selectCanBeAttacking, selectCanBeAttacked } from 'selectors';
 
@@ -11,10 +12,52 @@ const initialGame = {
         // attackingArmies: null,
         // defendingTid: null,
         // defendingArmies: null,
+        // dice: {
+            // attacking: [],
+            // defending: [],
+            // victors: [],
+            // losses: {},
+        // },
     },
 };
 
-const handleSelect = (game, action, map, players) => {
+const processDice = dice => {
+    // copy so that we can sort for algorithmic purposes here and show dice in
+    // original random order to UI
+    const attacking = [...dice.attacking];
+    const defending = [...dice.defending];
+
+    attacking.sort().reverse();
+    defending.sort().reverse();
+
+    const losses = {
+        attacking: 0,
+        defending: 0,
+    };
+
+    const victors = []
+    for (let i = 0; i < Math.min(attacking.length, defending.length); i++) {
+        if (defending[i] >= attacking[i]) {
+            victors.push([defending[i], attacking[i], 'D']);
+            losses.attacking += 1;
+        } else {
+            victors.push([attacking[i], defending[i], 'A']);
+            losses.defending += 1;
+        }
+    }
+
+    victors.sort((a, b) => {
+        return cmp(a[0], b[0]);
+    }).reverse();
+
+    return {
+        attacking, defending,
+        victors, losses
+    };
+};
+
+const handleSelect = (game, action, state) => {
+    const { map, players } = state;
     const player = players.byId[action.playerId];
     const numPlayers = players.order.length;
     const placedLastArmy = player.armies === 1;
@@ -65,21 +108,28 @@ const handleSelect = (game, action, map, players) => {
         }
 
     } else if (game.mode === consts.M_ATTACKING) {
-        if (selectCanBeAttacking(action.territoryId, game, map, players)) {
+        if (game.conflict.dice) {
+            // dice has been rolled, leave everything alone
+            return game;
+        } else if (selectCanBeAttacking(action.territoryId, state)) {
             // chose the attacking territory
+            const attacking = state.map.territories.byId[action.territoryId];
             return {
                 ...game,
                 conflict: {
                     attackingTid: action.territoryId,
+                    attackingArmies: attacking.armies === 2 ? 1 : null,
                 },
             };
-        } else if (selectCanBeAttacked(action.territoryId, game, map, players)) {
-            // chose the attacked territory
+        } else if (selectCanBeAttacked(action.territoryId, state)) {
+            // chose the defending territory
+            const defending = state.map.territories.byId[action.territoryId];
             return {
                 ...game,
                 conflict: {
                     ...game.conflict,
                     defendingTid: action.territoryId,
+                    defendingArmies: defending.armies === 1 ? 1 : null,
                 },
             };
         }
@@ -88,7 +138,9 @@ const handleSelect = (game, action, map, players) => {
     return game;
 };
 
-export default (game = initialGame, action, map, players) => {
+export default (game = initialGame, action, state) => {
+    const { map } = state;
+
     if (action.type === types.START_GAME) {
         return {
             ...game,
@@ -99,7 +151,7 @@ export default (game = initialGame, action, map, players) => {
         };
 
     } else if (action.type === types.SELECT) {
-        return handleSelect(game, action, map, players);
+        return handleSelect(game, action, state);
 
     } else if (action.type === types.END_TURN) {
         return {
@@ -124,6 +176,43 @@ export default (game = initialGame, action, map, players) => {
             conflict: {
                 ...game.conflict,
                 defendingArmies: action.numArmies,
+            },
+        };
+
+    } else if (action.type === types.DICE_ROLLED) {
+        return {
+            ...game,
+            conflict: {
+                ...game.conflict,
+                dice: processDice(action.dice),
+            },
+        };
+
+    } else if (action.type === types.APPLY_DICE_ROLL) {
+        let { attackingTid, defendingTid } = game.conflict;
+        const attacking = map.territories.byId[attackingTid];
+        const defending = map.territories.byId[defendingTid];
+
+        if (!selectCanBeAttacking(attackingTid, state)) {
+            // selected territory ran out of armies to attack with or it's
+            // armies captured all neighbouring enemy territories
+            attackingTid = null;
+            defendingTid = null;
+        } else if (defending.ownerId === attacking.ownerId) {
+            // cant attack yourself so we reset the defending territory
+            defendingTid = null;
+        }
+
+        return {
+            ...game,
+            conflict: {
+                attackingTid,
+                defendingTid,
+                attackingArmies: attackingTid &&
+                    attacking.armies === 2 ? 1 : null,
+                defendingArmies: defendingTid &&
+                    defending.armies === 1 ? 1 : null,
+                dice: null,
             },
         };
     }

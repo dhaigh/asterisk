@@ -17,3 +17,12 @@ export const M_CLAIMING = 'Claiming';
 export const M_REINFORCING = 'Reinforcing';
 export const M_PLACING = 'Placing';
 export const M_ATTACKING = 'Attacking';
+
+export const DIE_CHARS = {
+    1: '\u2680',
+    2: '\u2681',
+    3: '\u2682',
+    4: '\u2683',
+    5: '\u2684',
+    6: '\u2685',
+};
