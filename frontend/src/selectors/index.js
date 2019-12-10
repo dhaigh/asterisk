@@ -277,19 +277,19 @@ const selectActiveOrNeighbour = createSelector(
 const territoryClassName = (state, props) => {
     const { game, neighbours } = state;
     const tid = getTid(null, props)
+    const { attackingTid } = game.conflict;
 
     if (neighbours.on) {
         // <shift> neighbour viewing mode
         return selectActiveOrNeighbour(state, neighbours.tid, false, tid);
 
-    } else if (game.attackingTid !== null) {
+    } else if (attackingTid !== null) {
         // check attacking territory
         if (tid === game.conflict.defendingTid) {
             return 'attacked';
         } else {
             // check attacking territory
-            return selectActiveOrNeighbour(
-                state, game.conflict.attackingTid, true, tid);
+            return selectActiveOrNeighbour(state, attackingTid, true, tid);
         }
     }
 
