@@ -37,12 +37,60 @@ span.key {
 }
 
 // -----------------------------------------------------------------------------
+// svg stuff
+
+$yellow: #ff0;
+$red: #f00;
+
+$BORDER: 5px;
+$WIDTH: 1150px + $BORDER;
+$HEIGHT: 660px + $BORDER;
+
+svg.map {
+    float: left;
+    width: $WIDTH;
+    height: $HEIGHT;
+    border: $BORDER solid;
+    border-radius: 3px;
+}
+
+path:hover {
+    fill: currentColor;
+}
+
+
+path.neighbour {
+    &, &:hover { fill: $yellow; }
+}
+
+path.active {
+    &, &:hover { fill: $red; }
+}
+
+path.attacked {
+    fill: url(#crosshatch);
+}
+
+pattern .square {
+  &.yellow { fill: $yellow; }
+  &.red { fill: $red; }
+}
+
+text {
+    fill: #fff;
+}
+
+rect {
+    transition: width 0.05s ease-out;
+}
+
+// -----------------------------------------------------------------------------
 // panel
 .panel {
     position: relative;
     float: left;
     margin-left: 1rem;
-    height: 660px;
+    height: $HEIGHT;
     padding: 0.5rem;
     width: 300px;
     border: 5px solid;
@@ -91,7 +139,7 @@ section.territory {
     font-size: 0.9rem;
 }
 
-.attack-summary div {
+.attack-summary > div {
     margin-bottom: 1rem;
     text-align: center;
 
@@ -101,47 +149,8 @@ section.territory {
         border-radius: 0.5rem;
         display: inline-block;
     }
-}
 
-// -----------------------------------------------------------------------------
-// svg stuff
-$yellow: #ff0;
-$red: #f00;
-
-svg.map {
-    float: left;
-    height: 660px;
-    width: 1150px;
-    border: 5px solid;
-    border-radius: 3px;
-}
-
-path:hover {
-    fill: currentColor;
-}
-
-
-path.neighbour {
-    &, &:hover { fill: $yellow; }
-}
-
-path.active {
-    &, &:hover { fill: $red; }
-}
-
-path.attacked {
-    fill: url(#crosshatch);
-}
-
-pattern .square {
-  &.yellow { fill: $yellow; }
-  &.red { fill: $red; }
-}
-
-text {
-    fill: #fff;
-}
-
-rect {
-    transition: width 0.05s ease-out;
+    .dice {
+        font-size: 4rem;
+    }
 }
