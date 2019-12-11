@@ -256,9 +256,23 @@ export const applyDiceRoll = () => ({
     type: types.APPLY_DICE_ROLL,
 });
 
-export const beginFortifying = () => ({
+const _beginFortifying = () => ({
     type: types.BEGIN_FORTIFYING,
 });
+
+export const beginFortifying = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+
+        if (state.game.conflict.dice) {
+            // can't start fortifying if you have rolled dice
+            return;
+        }
+
+        dispatch(_beginFortifying());
+    };
+};
+
 
 export const setPickingArmies = on => ({
     type: types.SET_PICKING_ARMIES,
