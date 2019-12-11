@@ -6,7 +6,11 @@ import { selectCanBeAttacking, selectCanBeAttacked } from 'selectors';
 const initialGame = {
     mode: consts.M_PREGAME,
     turn: -1,
-    armiesInHand: {},
+
+    // only relevant to fortifying mode
+    pickingArmies: false,
+
+    // only relevant to attacking mode
     conflict: {
         // attackingTid: null,
         // attackingArmies: null,
@@ -111,7 +115,7 @@ const handleSelect = (game, action, state) => {
         if (game.conflict.dice) {
             // dice has been rolled, leave everything alone
             return game;
-        } else if (selectCanBeAttacking(action.territoryId, state)) {
+        } else if (selectCanBeAttacking(state, action.territoryId)) {
             // chose the attacking territory
             const attacking = state.map.territories.byId[action.territoryId];
             return {
@@ -121,7 +125,7 @@ const handleSelect = (game, action, state) => {
                     attackingArmies: attacking.armies === 2 ? 1 : null,
                 },
             };
-        } else if (selectCanBeAttacked(action.territoryId, state)) {
+        } else if (selectCanBeAttacked(state, action.territoryId)) {
             // chose the defending territory
             const defending = state.map.territories.byId[action.territoryId];
             return {
@@ -158,7 +162,6 @@ export default (game = initialGame, action, state) => {
             ...game,
             mode: consts.M_PLACING,
             turn: game.turn + 1,
-            conflict: {},
         };
 
     } else if (action.type === types.SET_ATTACKING_WITH) {
@@ -193,7 +196,7 @@ export default (game = initialGame, action, state) => {
         const attacking = map.territories.byId[attackingTid];
         const defending = map.territories.byId[defendingTid];
 
-        if (!selectCanBeAttacking(attackingTid, state)) {
+        if (!selectCanBeAttacking(state, attackingTid)) {
             // selected territory ran out of armies to attack with or it's
             // armies captured all neighbouring enemy territories
             attackingTid = null;
@@ -214,6 +217,19 @@ export default (game = initialGame, action, state) => {
                     defending.armies === 1 ? 1 : null,
                 dice: null,
             },
+        };
+
+    } else if (action.type === types.BEGIN_FORTIFYING) {
+        return {
+            ...game,
+            mode: consts.M_FORTIFYING,
+            conflict: {},
+        };
+
+    } else if (action.type === types.SET_PICKING_ARMIES) {
+        return {
+            ...game,
+            pickingArmies: action.on,
         };
     }
 

@@ -33,7 +33,7 @@ export const whoIsNext = ({ game, players }) => {
     return players.byId[players.order[index]];
 };
 
-export const selectCanBeAttacking = (tid, state) => {
+export const selectCanBeAttacking = (state, tid) => {
     const territory = state.map.territories.byId[tid];
     return (
         // cant attack from a territory with only 1 army
@@ -47,7 +47,7 @@ export const selectCanBeAttacking = (tid, state) => {
     );
 };
 
-export const selectCanBeAttacked = (tid, state) => {
+export const selectCanBeAttacked = (state, tid) => {
     const territory = state.map.territories.byId[tid];
     const { attackingTid } = state.game.conflict;
     return (

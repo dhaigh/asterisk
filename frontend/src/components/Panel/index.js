@@ -6,14 +6,9 @@ import {
     getPlayers, getHoverTerritory, selectUnclaimedTerritories
 } from 'selectors';
 import Item from './Item';
-import PlayerItem from './PlayerItem';
 import AttackSummary from './AttackSummary';
-
-const PlayerSummary = ({ players }) => {
-    return players.map(player =>
-        <PlayerItem key={player.id} player={player} />
-    );
-};
+import FortifyingSummary from './FortifyingSummary';
+import PlayerSummary from './PlayerSummary';
 
 const Panel = props => {
     return <div className="panel" style={{
@@ -22,9 +17,9 @@ const Panel = props => {
         <h1>Asterisk</h1>
         <section>
             <h2>{props.mode}</h2>
-            {props.mode === consts.M_ATTACKING
-                ? <AttackSummary />
-                : <PlayerSummary players={props.players} />
+            {props.mode === consts.M_ATTACKING ? <AttackSummary /> :
+             props.mode === consts.M_FORTIFYING ? <FortifyingSummary /> :
+                <PlayerSummary />
             }
             {props.unclaimed.length > 0 && <>
                 <h2>Still Unclaimed</h2>

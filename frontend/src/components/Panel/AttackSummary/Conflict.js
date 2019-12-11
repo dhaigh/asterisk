@@ -7,7 +7,9 @@ import {
 } from 'selectors';
 import DiceResults from './DiceResults';
 
-const armies = n => n === 1 ? `${n} army` : `${n} armies`;
+const armies = n => (
+    n === 1 ? `${n} army` : `${n} armies`
+);
 
 class Conflict extends PureComponent {
     attackHandler = numArmies => () => {

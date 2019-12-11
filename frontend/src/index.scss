@@ -139,9 +139,13 @@ section.territory {
     font-size: 0.9rem;
 }
 
-.attack-summary > div {
+.summary > div {
     margin-bottom: 1rem;
     text-align: center;
+
+    &.long {
+        line-height: 1.4;
+    }
 
     span.country {
         padding: 0.5rem 0.8rem;;

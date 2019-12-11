@@ -13,7 +13,8 @@ const initialMap = () => ({
     },
 });
 
-const handleSelect = (tById, action, gameMode) => {
+const handleSelect = (tById, action, game) => {
+    const gameMode = game.mode;
     const tid = action.territoryId;
     const pid = action.playerId;
     const territory = tById[tid];
@@ -42,12 +43,22 @@ const handleSelect = (tById, action, gameMode) => {
                 },
             };
         }
+    } else if (gameMode === consts.M_FORTIFYING) {
+        return {
+            ...tById,
+            [tid]: {
+                ...territory,
+                armies: game.pickingArmies
+                    ? territory.armies - 1
+                    : territory.armies + 1,
+            },
+        };
     }
 
     return tById;
 };
 
-export default (map = initialMap(), action, {game}) => {
+export default (map = initialMap(), action, { game }) => {
     if (action.type === types.INIT) {
         // since INIT actions only get made once we probably could just do a
         // shallow clone of initialMap and go from there, but this way is more
@@ -91,7 +102,7 @@ export default (map = initialMap(), action, {game}) => {
             ...map,
             territories: {
                 ...map.territories,
-                byId: handleSelect(map.territories.byId, action, game.mode),
+                byId: handleSelect(map.territories.byId, action, game),
             },
         };
 

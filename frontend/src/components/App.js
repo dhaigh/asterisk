@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux'
 import Map from './Map'
 import Panel from './Panel'
-import { load, setViewingNeighbours } from 'actions';
+import { load, setViewingNeighbours, setPickingArmies } from 'actions';
 
 class App extends PureComponent {
     state = {
@@ -12,12 +12,16 @@ class App extends PureComponent {
     handleKeyDown = (e) => {
         if (e.key === 'Shift') {
             this.props.setViewingNeighbours(true);
+        } else if (e.code === 'KeyR') {
+            this.props.setPickingArmies(true);
         }
     };
 
     handleKeyUp = (e) => {
         if (e.key === 'Shift') {
             this.props.setViewingNeighbours(false);
+        } else if (e.code === 'KeyR') {
+            this.props.setPickingArmies(false);
         }
     };
 
@@ -52,5 +56,5 @@ class App extends PureComponent {
 
 export default connect(
     null,
-    { load, setViewingNeighbours }
+    { load, setViewingNeighbours, setPickingArmies }
 )(App)

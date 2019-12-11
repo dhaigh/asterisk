@@ -50,6 +50,17 @@ const handleSelect = (players, pid, state) => {
                 armies: player.armies - 1
             },
         };
+
+    } else if (game.mode === consts.M_FORTIFYING) {
+        byId = {
+            ...byId,
+            [pid]: {
+                ...player,
+                armies: game.pickingArmies
+                    ? player.armies + 1
+                    : player.armies - 1
+            },
+        };
     }
 
     return {

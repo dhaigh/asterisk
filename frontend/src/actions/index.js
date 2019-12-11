@@ -140,7 +140,7 @@ export const setViewingNeighbours = on => ({
     on,
 });
 
-export const select = (territoryId, playerId) => ({
+const select = (territoryId, playerId) => ({
     type: types.SELECT,
     territoryId,
     playerId,
@@ -165,14 +165,26 @@ export const selectTerritory = territoryId => {
         const territory = getTerritoryById(state, territoryId);
 
         if (mode === consts.M_CLAIMING) {
-            // can't claim if someone else already has
             if (territory.ownerId !== null) {
+                // can't claim if someone else already has
                 return;
             }
         } else if (mode === consts.M_REINFORCING ||
-                   mode === consts.M_PLACING) {
+                   mode === consts.M_PLACING ||
+                   mode === consts.M_FORTIFYING
+        ) {
             if (territory.ownerId !== player.id) {
-                // can't place if you don't own it
+                // can't place (or pick if fortifying) if you don't own it
+                return;
+            }
+
+            if (mode === consts.M_FORTIFYING && state.game.pickingArmies) {
+                if (territory.armies === 1) {
+                    // can't pick from a territory with only 1 army
+                    return;
+                }
+            } else if (player.armies === 0) {
+                // can't place if you got no armies
                 return;
             }
         }
@@ -188,9 +200,23 @@ export const selectTerritory = territoryId => {
     };
 };
 
-export const endTurn = () => ({
+const _endTurn = () => ({
     type: types.END_TURN,
 });
+
+export const endTurn = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        const player = whoseTurn(state);
+
+        if (player.armies > 0) {
+            // can't end turn if you have armies in hand
+            return;
+        }
+
+        dispatch(_endTurn());
+    };
+};
 
 export const setAttackingWith = numArmies => ({
     type: types.SET_ATTACKING_WITH,
@@ -228,4 +254,13 @@ export const rollDice = () => {
 
 export const applyDiceRoll = () => ({
     type: types.APPLY_DICE_ROLL,
+});
+
+export const beginFortifying = () => ({
+    type: types.BEGIN_FORTIFYING,
+});
+
+export const setPickingArmies = on => ({
+    type: types.SET_PICKING_ARMIES,
+    on,
 });

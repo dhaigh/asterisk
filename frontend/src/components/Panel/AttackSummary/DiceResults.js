@@ -6,7 +6,7 @@ import {
 } from 'selectors';
 import { DIE_CHARS } from 'utils/constants';
 
-const Die = ({num, color}) => {
+const Die = ({ num, color }) => {
     return <span className="die" style={{color}}>
         {DIE_CHARS[num]}
     </span>;
