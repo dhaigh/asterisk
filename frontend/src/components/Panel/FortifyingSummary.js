@@ -10,8 +10,8 @@ class FortifyingSummary extends PureComponent {
     render() {
         return <div className="summary">
             <div className="long">
-                Hold <span className="key">R</span> and click to pick up armies
-                from territories with more than one
+                Hold <span className="key">Alt</span> and click to pick up armies
+                from territories with at least two
             </div>
             <div><button onClick={this.handleEndTurn}>End Turn</button></div>
         </div>;

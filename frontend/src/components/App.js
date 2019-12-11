@@ -12,7 +12,7 @@ class App extends PureComponent {
     handleKeyDown = (e) => {
         if (e.key === 'Shift') {
             this.props.setViewingNeighbours(true);
-        } else if (e.code === 'KeyR') {
+        } else if (e.key === 'Alt') {
             this.props.setPickingArmies(true);
         }
     };
@@ -20,7 +20,7 @@ class App extends PureComponent {
     handleKeyUp = (e) => {
         if (e.key === 'Shift') {
             this.props.setViewingNeighbours(false);
-        } else if (e.code === 'KeyR') {
+        } else if (e.key === 'Alt') {
             this.props.setPickingArmies(false);
         }
     };
