@@ -106,6 +106,10 @@ rect {
         margin-bottom: 1rem;
     }
 
+    &.regular.remaining {
+        margin-bottom: 0.5rem;
+    }
+
     &:last-child {
         margin-bottom: 0;
     }

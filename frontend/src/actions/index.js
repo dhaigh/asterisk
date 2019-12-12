@@ -273,7 +273,6 @@ export const beginFortifying = () => {
     };
 };
 
-
 export const setPickingArmies = on => ({
     type: types.SET_PICKING_ARMIES,
     on,

@@ -203,7 +203,7 @@ export const selectUnclaimedTerritories = createSelector(
     selectTerritories,
     territories => {
         const unclaimed = territories.filter(t => t.ownerId === null);
-        if (unclaimed.length > 7) {
+        if (unclaimed.length > 5) {
             return [];
         }
         return unclaimed;

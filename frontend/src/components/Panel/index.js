@@ -1,11 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import * as consts from 'utils/constants';
-import {
-    whoseTurn,
-    getPlayers, getHoverTerritory, selectUnclaimedTerritories
-} from 'selectors';
-import Item from './Item';
+import { whoseTurn, getPlayers, getHoverTerritory } from 'selectors';
 import AttackSummary from './AttackSummary';
 import FortifyingSummary from './FortifyingSummary';
 import PlayerSummary from './PlayerSummary';
@@ -21,14 +17,6 @@ const Panel = props => {
              props.mode === consts.M_FORTIFYING ? <FortifyingSummary /> :
                 <PlayerSummary />
             }
-            {props.unclaimed.length > 0 && <>
-                <h2>Still Unclaimed</h2>
-                {props.unclaimed.map(t =>
-                    <Item key={t.id} color={t.continent.color}>
-                        {t.name}
-                    </Item>
-                )}
-            </>}
         </section>
 
         <section className="territory">
@@ -42,5 +30,4 @@ export default connect(state => ({
     players: getPlayers(state),
     whoseTurn: whoseTurn(state),
     hoverTerritory: getHoverTerritory(state),
-    unclaimed: selectUnclaimedTerritories(state),
 }))(Panel);
