@@ -12,7 +12,7 @@ const PlayerSummary = ({ players, unclaimed }) => {
         {unclaimed.length > 0 && <>
             <h2>Still Unclaimed</h2>
             {unclaimed.map(t =>
-                <Item key={t.id} color={t.continent.color} className={"remaining"}>
+                <Item key={t.id} color={t.continent.color}>
                     {t.name}
                 </Item>
             )}

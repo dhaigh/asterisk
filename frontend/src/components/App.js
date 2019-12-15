@@ -46,10 +46,6 @@ class App extends PureComponent {
         return <>
             <Map />
             <Panel />
-            <br className="clearboth" />
-            <p className="hint">
-                Hold <span className="key">Shift</span> key to view territory neighbours.
-            </p>
         </>;
     }
 }

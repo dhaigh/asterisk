@@ -13,19 +13,17 @@ body {
     font: 1rem/1 sans-serif;
 }
 
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
 button {
     font-size: 1rem;
 }
 
 .clearboth {
     clear: both;
-}
-
-// -----------------------------------------------------------------------------
-// hint
-p.hint {
-    margin-top: 0.9rem;
-    font-size: 0.9rem;
 }
 
 span.key {
@@ -42,16 +40,29 @@ span.key {
 $yellow: #ff0;
 $red: #f00;
 
-$BORDER: 5px;
-$WIDTH: 1150px + $BORDER;
-$HEIGHT: 660px + $BORDER;
+$border: 10px;
+$svg_width: 1150px + $border*2;
+$svg_height: 660px + $border*2;
+$panel_width: 330px;
 
-svg.map {
-    float: left;
-    width: $WIDTH;
-    height: $HEIGHT;
-    border: $BORDER solid;
-    border-radius: 3px;
+.map {
+    position: absolute;
+    left: calc(50% - #{($svg_width + $panel_width)/2});
+
+    // the 3rem comes from h1 font-size (2rem) + margin-bottom (1rem)
+    top: calc(50% - (#{$svg_height/2} + 3rem);
+
+    > svg {
+        width: $svg_width;
+        height: $svg_height;
+        border: $border solid;
+        border-radius: 5px;
+    }
+
+    > .hint {
+        margin-top: 0.9rem;
+        font-size: 0.9rem;
+    }
 }
 
 path:hover {
@@ -87,14 +98,13 @@ rect {
 // -----------------------------------------------------------------------------
 // panel
 .panel {
-    position: relative;
-    float: left;
-    margin-left: 1rem;
-    height: $HEIGHT;
-    padding: 0.5rem;
-    width: 300px;
-    border: 5px solid;
-    border-radius: 3px;
+    position: fixed;
+    right: 0;
+    top: 0; bottom: 0;
+    padding: 2rem 1rem 2rem;
+    width: $panel_width;
+    border-left: $border solid;
+    background: #fff;
 }
 
 .item {
@@ -104,10 +114,6 @@ rect {
 
     &.regular {
         margin-bottom: 1rem;
-    }
-
-    &.regular.remaining {
-        margin-bottom: 0.5rem;
     }
 
     &:last-child {
@@ -138,9 +144,8 @@ rect {
 
 section.territory {
     position: absolute;
-    bottom: 0.5rem;
-    left: 0.5rem;
-    font-size: 0.9rem;
+    left: 1rem;
+    bottom: 2rem;
 }
 
 .summary > div {

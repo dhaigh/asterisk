@@ -10,7 +10,6 @@ const Panel = props => {
     return <div className="panel" style={{
         borderColor: props.whoseTurn.color,
     }}>
-        <h1>Asterisk</h1>
         <section>
             <h2>{props.mode}</h2>
             {props.mode === consts.M_ATTACKING ? <AttackSummary /> :
