@@ -1,5 +1,6 @@
 import * as types from './types';
 import * as consts from 'utils/constants';
+import { shuffle } from 'utils';
 import map from 'map.json';
 import {
     getTerritoryById, whoseTurn, selectAttackingArmies, selectDefendingArmies
@@ -10,30 +11,55 @@ const init = data => ({
     data: data,
 });
 
+const colors = [
+    '#ff8800',
+    '#ff0022',
+    '#3fafd7',
+    'purple',
+    'navy',
+    '#4BB368',
+];
+
+const pickColor = () => {
+    const i = Math.floor(Math.random() * colors.length);
+    const color = colors[i];
+    colors.splice(i, 1);
+    return color;
+};
+
 export const load = () => {
     return (dispatch, getState) => {
-        // TODO: get from server
+        // TODO: get from server if playing non-locally
+        // TODO: refactor
+
+        let numPlayers = 3;//parseInt(window.prompt('Enter number of players (2-6)'), 10);
+        while (Number.isNaN(numPlayers) || numPlayers > 6) {
+            numPlayers = parseInt(window.prompt('Enter number of players (2-6)'), 10);
+        }
+
+        const players = {};
+        const playerOrder = [];
+        for (let n = 1; n <= numPlayers; n++) {
+            players[n] = {
+                id: n,
+                //name: window.prompt(`Player ${n} name`),
+                name: (`Player ${n}`),
+                color: pickColor(),
+            };
+            playerOrder.push(n);
+        }
+        shuffle(playerOrder);
+
         dispatch(init({
             map,
-            me: {
-                id: 1,
-                name: 'Geddy',
-                color: '#006aff',
-            },
-        }));
-        dispatch(playerJoined({
-            id: 2,
-            name: 'Alex',
-            color: '#ff0022',
-        }));
-        dispatch(playerJoined({
-            id: 3,
-            name: 'Neil',
-            color: '#ff8800',
+            me: players[1],
         }));
 
-        // this order should be randomised
-        dispatch(startGame([2, 3, 1]));
+        for (let n = 2; n <= numPlayers; n++) {
+            dispatch(playerJoined(players[n]));
+        }
+
+        dispatch(startGame(playerOrder));
 
         dispatch(selectTerritory(1));
         dispatch(selectTerritory(7));
@@ -101,20 +127,6 @@ export const load = () => {
             dispatch(selectTerritory(7));
         for (let i = 0; i < 21; i++)
             dispatch(selectTerritory(40));
-
-        // place
-        dispatch(selectTerritory(34));
-        dispatch(selectTerritory(34));
-        dispatch(selectTerritory(34));
-        dispatch(selectTerritory(34));
-
-        // // choose attacking
-        dispatch(selectTerritory(34));
-
-        // choose defending
-        dispatch(selectTerritory(33));
-
-        dispatch(setAttackingWith(3));
 
         return Promise.resolve();
     };
@@ -192,11 +204,14 @@ export const selectTerritory = territoryId => {
         dispatch(select(territoryId, player.id));
 
         // player order is shuffled after reinforcement
-        const newMode = getState().game.mode;
-        if (mode === consts.M_REINFORCING && newMode === consts.M_PLACING) {
-            // TODO: randomize
-            dispatch(reorderPlayers([3, 2, 1]));
-        }
+        // TODO: remove all of the following, doesn't seem to be in hasboro.com
+        // rules
+        // const newMode = getState().game.mode;
+        // const playerOrder = [...state.players.order];
+        // shuffle(playerOrder);
+        // if (mode === consts.M_REINFORCING && newMode === consts.M_PLACING) {
+        //     dispatch(reorderPlayers(playerOrder));
+        // }
     };
 };
 

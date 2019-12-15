@@ -1,13 +1,19 @@
 MVP
-- Fortification
+- reinforcement should actually be taken in turns
+- undo during claiming
 
 
 
 Important
 - Save game json
+- Always defend with 2 if possible? Means attacking doesn't require input from defender
+- keyboard numbers for attacking mode
 
 
 
 Later
 - Prevent unnecessary re-renders
+- Logo with * to dot the i
 ? Tabs for the side panel (e.g. so you can switch back to see players tab)
+? Pickup during reinforcement
+? Cards
