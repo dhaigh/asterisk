@@ -6,7 +6,7 @@ export const buildAdjacencyMap = list => {
     // make 2d array size x size, filled with false
     const matrix = Array.from(new Array(size), () => {
         // you can't iterate over `Array(size)` (without new keyword)
-        return new Array(size).fill(false)
+        return new Array(size).fill(false);
     });
 
     list.forEach(edge => {
@@ -56,7 +56,7 @@ export const cmp = (a, b) => {
 export const shuffle = arr => {
     for (let i = arr.length - 1; i > 0; i--) {
         // random index from 0 to i inclusive
-        let j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
