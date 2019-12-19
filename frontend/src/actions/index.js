@@ -12,12 +12,12 @@ const init = data => ({
 });
 
 const colors = [
-    '#ff8800',
-    '#ff0022',
-    '#3fafd7',
-    'purple',
-    'navy',
-    '#4BB368',
+    '#ff8800', // orange
+    '#ff0022', // red
+    '#3fafd7', // blue
+    '#cc00cc', // purple
+    '#000090', // navy
+    '#4bb368', // green
 ];
 
 const pickColor = () => {
