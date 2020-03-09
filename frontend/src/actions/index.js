@@ -6,7 +6,7 @@ import {
     getTerritoryById, whoseTurn, selectAttackingArmies, selectDefendingArmies
 } from 'selectors';
 
-const init = data => ({
+export const init = data => ({
     type: types.INIT,
     data: data,
 });
@@ -152,7 +152,7 @@ export const setViewingNeighbours = on => ({
     on,
 });
 
-const select = (territoryId, playerId) => ({
+export const select = (territoryId, playerId) => ({
     type: types.SELECT,
     territoryId,
     playerId,

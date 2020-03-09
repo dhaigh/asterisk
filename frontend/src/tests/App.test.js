@@ -13,10 +13,12 @@ it('renders without crashing', () => {
         applyMiddleware(thunk)
     );
 
-    render(
-        <Provider store={store}>
-            <App />
-        </Provider>,
-        document.createElement('div')
-    );
+    expect(() => {
+        render(
+            <Provider store={store}>
+                <App />
+            </Provider>,
+            document.createElement('div')
+        );
+    }).not.toThrow();
 });
